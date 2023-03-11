@@ -1,0 +1,19 @@
+---
+# task/configure file for hashicorp_consul
+- name: "Copy consul.hcl template"
+  ansible.builtin.template:
+    src: consul.hcl.j2
+    dest: /etc/consul.d/consul.hcl
+    owner: consul
+    group: consul
+    mode: '0600'
+  notify:
+    - "systemctl-enable-consul"
+
+- name: "Create empty consul.env"
+  ansible.builtin.file:
+    path: "/etc/consul.d/consul.env"
+    owner: consul
+    group: consul
+    mode: '0600'
+    state: touch

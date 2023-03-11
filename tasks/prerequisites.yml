@@ -1,0 +1,29 @@
+---
+# task/prerequisites file for hashicorp_consul
+- name: "Create consul group"
+  ansible.builtin.group:
+    name: consul
+    state: present
+
+- name: "Create consul user"
+  ansible.builtin.user:
+    name: consul
+    group: consul
+    shell: /bin/false
+    state: present
+
+- name: "Create /etc/consul.d directory"
+  ansible.builtin.file:
+    path: "/etc/consul.d"
+    state: directory
+    owner: consul
+    group: consul
+    mode: '0755'
+
+- name: "Create {{ hashi_consul_data_dir }} directory"
+  ansible.builtin.file:
+    path: "{{ hashi_consul_data_dir }}"
+    state: directory
+    owner: consul
+    group: consul
+    mode: '0755'

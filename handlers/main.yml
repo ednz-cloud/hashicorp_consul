@@ -1,0 +1,23 @@
+---
+# handlers file for hashicorp_consul
+- name: "Enable consul service"
+  ansible.builtin.service:
+    name: consul
+    enabled: true
+  listen: "systemctl-enable-consul"
+
+# - name: "Edit consul conf.d file"
+#   ansible.builtin.copy:
+#     src: "files/etc_conf.d_consul"
+#     dest: "/etc/conf.d/consul"
+#     owner: root
+#     group: root
+#     mode: '0644'
+# 
+# - name: "Edit consul init.d file"
+#   ansible.builtin.copy:
+#     src: "files/etc_init.d_consul"
+#     dest: "/etc/init.d/consul"
+#     owner: root
+#     group: root
+#     mode: '0755'

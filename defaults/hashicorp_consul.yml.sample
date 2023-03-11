@@ -1,0 +1,49 @@
+---
+# # defaults file for hashicorp_consul
+# hashi_consul_deploy_method: host  # deployment method, either host or docker.
+# hashi_consul_domain: consul
+# hashi_consul_datacenter: dc1
+# hashi_consul_primary_datacenter: "{{ hashi_consul_datacenter }}"
+# hashi_consul_data_dir: /opt/consul
+# hashi_consul_client_addr: "0.0.0.0"
+# hashi_consul_bind_addr: "{{ ansible_default_ipv4.address }}"
+# hashi_consul_advertise_addr: "{{ ansible_default_ipv4.address }}"
+# hashi_consul_log_level: INFO
+# # consul server
+# hashi_consul_server_enable: true
+# hashi_consul_server:
+#   ui: true
+#   encrypt: "somerandomstring"
+#   bootstrap_expect: 1
+#   retry_join:
+#     - 127.0.0.1
+#   leave_on_terminate: true
+#   rejoin_after_leave: true
+#   enable_script_checks: true
+#   enable_syslog: true
+# # consul ports
+# hashi_consul_server_ports:
+#   dns: 8600
+#   http: 8500
+#   https: -1
+#   grpc: 8502
+#   server: 8300
+#   serf_lan: 8301
+#   serf_wan: 8302
+#   sidecar_min_port: 21000
+#   sidecar_max_port: 21255
+#   expose_min_port: 21500
+#   expose_max_port: 21755
+# # consul client
+# hashi_consul_client:
+#   start_join:
+#     - 127.0.0.1
+# # consul connect
+# hashi_consul_connect_enable: false
+# # consul acl
+# hashi_consul_acl_enabled: false
+# hashi_consul_acl:
+#   default_policy: "allow"
+#   enable_token_persistence: true
+#   token_initial_management: ""
+#   token_agent: "{{ hashi_consul_acl['token_initial_management'] }}"
