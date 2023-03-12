@@ -43,13 +43,16 @@ ui_config {
 bootstrap_expect = {{ hashi_consul_server['bootstrap_expect'] }}
 retry_join = [{% for item in hashi_consul_server['retry_join'] %}"{{ item }}"{% if not loop.last %},{% endif %}{% endfor %}]
 acl = {
-    enabled = {{ hashi_consul_acl_enabled|lower }}
-{% if hashi_consul_acl_enabled %}
+    enabled = {{ hashi_consul_acl_enable|lower }}
+{% if hashi_consul_acl_enable %}
     default_policy = "{{ hashi_consul_acl['default_policy'] }}"
     enable_token_persistence = {{ hashi_consul_acl['enable_token_persistence']|lower }}
 {% if hashi_consul_acl['token_initial_management'] != None %}
     tokens {
       initial_management = "{{ hashi_consul_acl['token_initial_management'] }}"
+{% if hashi_consul_acl['default_policy'] == 'deny' %}
+      agent = "{{ hashi_consul_acl['token_agent'] }}"
+{% endif %}
     }
 {% endif %}
 {% endif %}
@@ -59,8 +62,8 @@ acl = {
 ## This is a consul client
 retry_join = [{% for item in hashi_consul_client['start_join'] %}"{{ item }}"{% if not loop.last %},{% endif %}{% endfor %}]
 acl = {
-    enabled = {{ hashi_consul_acl_enabled|lower }}
-{% if hashi_consul_acl_enabled %}
+    enabled = {{ hashi_consul_acl_enable|lower }}
+{% if hashi_consul_acl_enable %}
     default_policy = "{{ hashi_consul_acl['default_policy'] }}"
 {% if hashi_consul_acl['token_agent'] != None %}
     tokens {

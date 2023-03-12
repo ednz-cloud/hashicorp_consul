@@ -43,7 +43,7 @@ hashi_consul_client:
 # consul connect
 hashi_consul_connect_enable: false
 # consul acl
-hashi_consul_acl_enabled: false
+hashi_consul_acl_enable: false
 hashi_consul_acl:
   default_policy: "allow"
   enable_token_persistence: true
