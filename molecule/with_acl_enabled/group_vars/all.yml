@@ -41,11 +41,11 @@ hashi_consul_client:
   start_join:
     - "{{ ansible_default_ipv4.address }}"
 # consul connect
-hashi_consul_connect_enable: false
+hashi_consul_connect_enable: true
 # consul acl
-hashi_consul_acl_enabled: false
+hashi_consul_acl_enabled: true
 hashi_consul_acl:
   default_policy: "allow"
   enable_token_persistence: true
-  token_initial_management: ""
-  token_agent: ""
+  token_initial_management: "1a1f2ce5-3730-47de-9a9c-89e037376bab"
+  token_agent: "1a1f2ce5-3730-47de-9a9c-89e037376bab"

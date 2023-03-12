@@ -16,4 +16,4 @@
     owner: consul
     group: consul
     mode: '0600'
-    state: touch
+    state: file
