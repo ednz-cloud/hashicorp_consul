@@ -5,19 +5,18 @@
     name: consul
     enabled: true
   listen: "systemctl-enable-consul"
+  notify: "want-started"
 
-# - name: "Edit consul conf.d file"
-#   ansible.builtin.copy:
-#     src: "files/etc_conf.d_consul"
-#     dest: "/etc/conf.d/consul"
-#     owner: root
-#     group: root
-#     mode: '0644'
-# 
-# - name: "Edit consul init.d file"
-#   ansible.builtin.copy:
-#     src: "files/etc_init.d_consul"
-#     dest: "/etc/init.d/consul"
-#     owner: root
-#     group: root
-#     mode: '0755'
+- name: "Check if consul needs to be started"
+  ansible.builtin.assert:
+    that: hashi_consul_start_service
+    quiet: true
+  changed_when: true
+  listen: "want-started"
+  notify: "systemctl-restart-consul"
+
+- name: "Start consul service"
+  ansible.builtin.service:
+    name: consul
+    state: restarted
+  listen: "systemctl-restart-consul"

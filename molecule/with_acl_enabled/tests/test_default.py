@@ -1,10 +1,11 @@
 """Role testing files using testinfra."""
 
-
 def test_hosts_file(host):
     """Validate /etc/hosts file."""
-    f = host.file("/etc/hosts")
+    etc_hosts = host.file("/etc/hosts")
+    assert etc_hosts.exists
+    assert etc_hosts.user == "root"
+    assert etc_hosts.group == "root"
 
-    assert f.exists
-    assert f.user == "root"
-    assert f.group == "root"
+def test_consul_config(host):
+    """Validate /etc/consul.d/ files."""

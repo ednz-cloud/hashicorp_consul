@@ -23,3 +23,12 @@
       - name: consul
         version: "{{ hashi_consul_version }}"
         state: present
+
+- name: "Copy systemd service file for consul"
+  ansible.builtin.copy:
+    src: "files/consul.service"
+    dest: "/lib/systemd/system/consul.service"
+    owner: root
+    group: root
+    mode: '0644'
+    force: false
