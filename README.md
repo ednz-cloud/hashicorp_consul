@@ -19,6 +19,11 @@ hashi_consul_install: true # by default, set to true
 This variable defines if the consul package is to be installed or not before configuring. If you install consul using another task, you can set this to `false`.
 
 ```yaml
+hashi_consul_start_service: true
+```
+This variable defines if the consul service should be started once it has been configured. This is usefull in case you're using this role to build golden images, in which case you might want to only enable the service, to have it start on the next boot (when the image is launched)
+
+```yaml
 hashi_consul_version: latest # by default, set to latest
 ```
 This variable specifies the version of consul to install when `hashi_consul_install` is set to `true`. The version to specify is the version of the package on the hashicorp repository (`1.14.1-1` for example).
