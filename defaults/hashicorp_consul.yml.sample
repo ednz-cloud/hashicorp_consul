@@ -1,5 +1,8 @@
 ---
 # # defaults file for hashicorp_consul
+# hashi_consul_install: true
+# hashi_consul_start_service: true
+# hashi_consul_version: latest
 # hashi_consul_deploy_method: host  # deployment method, either host or docker.
 # hashi_consul_domain: consul
 # hashi_consul_datacenter: dc1
@@ -13,10 +16,10 @@
 # hashi_consul_server_enable: true
 # hashi_consul_server:
 #   ui: true
-#   encrypt: "somerandomstring"
+#   encrypt: "{{ 'mysupersecretgossipencryptionkey'|b64encode }}"
 #   bootstrap_expect: 1
 #   retry_join:
-#     - 127.0.0.1
+#     - "{{ ansible_default_ipv4.address }}"
 #   leave_on_terminate: true
 #   rejoin_after_leave: true
 #   enable_script_checks: true
@@ -37,13 +40,13 @@
 # # consul client
 # hashi_consul_client:
 #   start_join:
-#     - 127.0.0.1
+#     - "{{ ansible_default_ipv4.address }}"
 # # consul connect
 # hashi_consul_connect_enable: false
 # # consul acl
-# hashi_consul_acl_enabled: false
+# hashi_consul_acl_enable: false
 # hashi_consul_acl:
 #   default_policy: "allow"
 #   enable_token_persistence: true
 #   token_initial_management: ""
-#   token_agent: "{{ hashi_consul_acl['token_initial_management'] }}"
+#   token_agent: ""

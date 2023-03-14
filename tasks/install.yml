@@ -1,5 +1,5 @@
 ---
-# task/install_consul file for hashicorp_consul
+# task/install file for hashicorp_consul
 - name: "Configure hashicorp repository"
   ansible.builtin.include_role:
     name: ednxzu.manage_repositories
