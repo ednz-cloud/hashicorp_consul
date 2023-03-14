@@ -1,7 +1,7 @@
 ---
 # task/install_consul file for hashicorp_consul
 - name: "Configure hashicorp repository"
-  ansible.builtin.include_role: 
+  ansible.builtin.include_role:
     name: ednxzu.manage_repositories
   vars:
     manage_repositories_enable_default_repo: false
@@ -16,7 +16,7 @@
         filename: "hashicorp"
 
 - name: "Install consul:{{ hashi_consul_version }}"
-  ansible.builtin.include_role: 
+  ansible.builtin.include_role:
     name: ednxzu.manage_apt_packages
   vars:
     manage_apt_packages_list:
