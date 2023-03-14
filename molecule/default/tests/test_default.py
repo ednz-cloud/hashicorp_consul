@@ -51,9 +51,19 @@ def test_consul_service(host):
     consul_service = host.service("consul.service")
     assert consul_service.is_valid
     assert consul_service.is_enabled
-    assert consul_service.is_started
+    assert consul_service.is_running
     assert consul_service.systemd_properties["Restart"] == "on-failure"
     assert consul_service.systemd_properties["User"] == "consul"
-    assert consul_service.systemd_properties["group"] == "consul"
-    assert consul_service.systemd_properties["EnvironmentFiles"] == "/etc/consul.d/consul.env"
+    assert consul_service.systemd_properties["Group"] == "consul"
+    assert consul_service.systemd_properties["EnvironmentFiles"] == "/etc/consul.d/consul.env (ignore_errors=yes)"
     assert consul_service.systemd_properties["FragmentPath"] == "/lib/systemd/system/consul.service"
+
+def test_consul_interaction(host):
+    """Validate interaction with consul."""
+    consul_kv_put = host.check_output("consul kv put foo bar")
+    consul_kv_get = host.check_output("consul kv get foo")
+    consul_kv_delete = host.check_output("consul kv delete foo")
+    assert host.check_output("consul members")
+    assert consul_kv_put == "Success! Data written to: foo"
+    assert consul_kv_get == "bar"
+    assert consul_kv_delete == "Success! Deleted key: foo"
