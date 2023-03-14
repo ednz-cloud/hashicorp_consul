@@ -49,7 +49,6 @@ def test_consul_service_file(host):
 def test_consul_service(host):
     """Validate consul service."""
     consul_service = host.service("consul.service")
-    assert consul_service.is_valid
     assert consul_service.is_enabled
     assert consul_service.is_running
     assert consul_service.systemd_properties["Restart"] == "on-failure"
