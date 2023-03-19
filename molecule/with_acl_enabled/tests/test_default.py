@@ -18,7 +18,7 @@ def test_consul_user_group(host):
 
 def test_consul_config(host):
     """Validate /etc/consul.d/ files."""
-    etc_consul_d_consul_env = host.file("/etc/consul.d/consul.env") 
+    etc_consul_d_consul_env = host.file("/etc/consul.d/consul.env")
     etc_consul_d_consul_hcl = host.file("/etc/consul.d/consul.hcl")
     for file in etc_consul_d_consul_env, etc_consul_d_consul_hcl:
         assert file.exists

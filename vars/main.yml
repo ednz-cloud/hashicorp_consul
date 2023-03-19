@@ -1,2 +1,5 @@
 ---
 # vars file for hashicorp_consul
+hashi_consul_user: consul
+hashi_consul_group: consul
+hashi_consul_config_dir: "/etc/consul.d"
