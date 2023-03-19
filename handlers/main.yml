@@ -5,7 +5,6 @@
     name: consul
     enabled: true
   listen: "systemctl-enable-consul"
-  notify: "systemctl-restart-consul"
 
 - name: "Start consul service"
   ansible.builtin.service:

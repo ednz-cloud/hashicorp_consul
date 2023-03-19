@@ -7,7 +7,9 @@
     owner: consul
     group: consul
     mode: '0600'
-  notify: "systemctl-enable-consul"
+  notify:
+    - "systemctl-enable-consul"
+    - "systemctl-restart-consul"
 
 - name: "Create empty consul.env"
   ansible.builtin.file:
