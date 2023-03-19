@@ -1,5 +1,4 @@
 ---
-# defaults file for hashicorp_consul
 hashi_consul_install: true
 hashi_consul_version: latest
 hashi_consul_deploy_method: host  # deployment method, either host or docker.
