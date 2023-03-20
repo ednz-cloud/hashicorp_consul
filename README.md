@@ -39,7 +39,7 @@ hashi_consul_server_enable: true # by default, set to true
 hashi_consul_connect_enable: false # by default, set to false
 hashi_consul_acl_enabled: false # by default, set to false
 ```
-These variables enable or disable the server, service mesh and acl functions or consul.
+These variables enable or disable the server, service mesh and acl functions for consul.
 
 ```yaml
 hashi_consul_server:
