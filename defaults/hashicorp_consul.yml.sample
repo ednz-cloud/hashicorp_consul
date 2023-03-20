@@ -1,5 +1,4 @@
 ---
-# # defaults file for hashicorp_consul
 # hashi_consul_install: true
 # hashi_consul_start_service: true
 # hashi_consul_version: latest
