@@ -26,7 +26,7 @@ This variable defines if the consul service should be started once it has been c
 ```yaml
 hashi_consul_version: latest # by default, set to latest
 ```
-This variable specifies the version of consul to install when `hashi_consul_install` is set to `true`. The version to specify is the version of the package on the hashicorp repository (`1.14.1-1` for example).
+This variable specifies the version of consul to install when `hashi_consul_install` is set to `true`. The version to specify is the version of the package on the hashicorp repository (`1.14.1-1` for example). This can be found by running `apt-cache madison consul` on a machine with the repository installed.
 
 ```yaml
 hashi_consul_deploy_method: host # by default, set to host

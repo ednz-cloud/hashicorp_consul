@@ -3,3 +3,15 @@
 hashi_consul_user: consul
 hashi_consul_group: consul
 hashi_consul_config_dir: "/etc/consul.d"
+hashi_consul_repository:
+  - uri: "https://apt.releases.hashicorp.com"
+    gpg_key: "https://apt.releases.hashicorp.com/gpg"
+    comments: "hashicorp repository"
+    type: "deb"
+    suites: "{{ ansible_distribution_release }}"
+    components: "main"
+    filename: "hashicorp"
+hashi_consul_packages:
+  - name: consul
+    version: "{{ hashi_consul_version }}"
+    state: present
