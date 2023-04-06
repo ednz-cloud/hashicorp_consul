@@ -35,6 +35,12 @@ This variable defines the method of deployment of consul. The `host` method inst
 > Currently, only the `host` method is available, the `docker` method will be added later.
 
 ```yaml
+hashi_consul_env_variables: # by default, set to empty
+  env_var: value
+```
+This value is a list of key/value that will populate the `consul.env` file. You do not have to capitalize the KEYS, as it will be done automatically.
+
+```yaml
 hashi_consul_server_enable: true # by default, set to true
 hashi_consul_connect_enable: false # by default, set to false
 hashi_consul_acl_enabled: false # by default, set to false

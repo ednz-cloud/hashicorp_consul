@@ -11,10 +11,10 @@
     - "systemctl-enable-consul"
     - "systemctl-restart-consul"
 
-- name: "Create empty consul.env"
-  ansible.builtin.file:
-    path: "{{ hashi_consul_config_dir }}/consul.env"
+- name: "Create consul.env"
+  ansible.builtin.template:
+    src: consul.env.j2
+    dest: "{{ hashi_consul_config_dir }}/consul.env"
     owner: "{{ hashi_consul_user }}"
     group: "{{ hashi_consul_group }}"
     mode: '0600'
-    state: file

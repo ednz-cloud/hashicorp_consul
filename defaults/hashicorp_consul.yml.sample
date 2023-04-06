@@ -3,6 +3,7 @@
 # hashi_consul_start_service: true
 # hashi_consul_version: latest
 # hashi_consul_deploy_method: host  # deployment method, either host or docker.
+# hashi_consul_env_variables: []
 # hashi_consul_domain: consul
 # hashi_consul_datacenter: dc1
 # hashi_consul_primary_datacenter: "{{ hashi_consul_datacenter }}"
