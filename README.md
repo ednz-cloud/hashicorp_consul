@@ -42,15 +42,21 @@ This value is a list of key/value that will populate the `consul.env` file. You 
 
 ```yaml
 hashi_consul_server_enable: true # by default, set to true
+hashi_consul_tls_enable: # by default, set to false
 hashi_consul_connect_enable: false # by default, set to false
 hashi_consul_acl_enabled: false # by default, set to false
 ```
-These variables enable or disable the server, service mesh and acl functions for consul.
+These variables enable or disable the server, service mesh, acl functions, and tls for consul.
 
 ```yaml
 hashi_consul_server:
 ```
 This variable sets a bunch of configuration parameters for consul. For more information on all of them, please check the [documentation](https://developer.hashicorp.com/consul/docs/agent/config/config-files). I try to name them the same as in the configuration file, so that it is easier to search for it. Most of the defaults in the role are the default values of consul, however, some might differ.
+
+```yaml
+hashi_consul_tls:
+```
+This variable sets up all config to use TLS certificates with consul.
 
 ```yaml
 hashi_consul_server_ports:
