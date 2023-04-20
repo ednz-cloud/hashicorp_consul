@@ -18,6 +18,19 @@ dns_config = {
     enable_truncate = true
     only_passing = true
 }
+
+{% if hashi_consul_tls_enable %}
+tls {
+  defaults {
+    ca_file = "{{ hashi_consul_tls['ca_file'] }}"
+    cert_file = "{{ hashi_consul_tls['cert_file'] }}"
+    key_file = "{{ hashi_consul_tls['key_file'] }}"
+    verify_incoming = {{ hashi_consul_tls['verify_incoming']|lower }}
+    verify_outgoing = {{ hashi_consul_tls['verify_outgoing']|lower }}
+  }
+}
+
+{% endif %}
 ports {
   dns = {{ hashi_consul_server_ports['dns'] }}
   http = {{ hashi_consul_server_ports['http'] }}

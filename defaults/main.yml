@@ -25,6 +25,14 @@ hashi_consul_server:
   rejoin_after_leave: true
   enable_script_checks: true
   enable_syslog: true
+# consul tls
+hashi_consul_tls_enable: false
+hashi_consul_tls:
+  ca_file: "{{ hashi_consul_data_dir }}/tls/ca.pem"
+  cert_file: "{{ hashi_consul_data_dir }}/tls/cert.pem"
+  key_file: "{{ hashi_consul_data_dir }}/tls/key.pem"
+  verify_incoming: false
+  verify_outgoing: true
 # consul ports
 hashi_consul_server_ports:
   dns: 8600

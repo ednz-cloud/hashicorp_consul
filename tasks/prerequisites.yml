@@ -10,7 +10,7 @@
 
 - name: "Create group {{ hashi_consul_group }}"
   ansible.builtin.group:
-    name: "{{ hashi_consul_user }}"
+    name: "{{ hashi_consul_group }}"
     state: present
 
 - name: "Create user {{ hashi_consul_user }}"
