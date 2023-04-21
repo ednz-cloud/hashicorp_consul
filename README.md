@@ -59,7 +59,12 @@ This value is a list of key/value that will populate the `consul.env` file. You 
 ```yaml
 hashi_consul_general:
 ```
-This variable sets a bunch of configuration parameters for consul. For more information on all of them, please check the [documentation](https://developer.hashicorp.com/consul/docs/agent/config/config-files). I try to name them the same as in the configuration file, so that it is easier to search for it. Most of the defaults in the role are the default values of consul, however, some might differ.
+This variable sets a bunch of configuration parameters for consul. For more information on all of them, please check the [documentation](https://developer.hashicorp.com/consul/docs/agent/config/config-files). Each key under it HAS to match a configuration key provided by the documentation, since these will be used to generate the config file. Most options (even the ones not present by default in the defaults) should work, however, the filter_plugin used to convert YAML to HCL is still not considered stable, so you might encounter some issues. Please let me know if you do.
+
+```yaml
+hashi_consul_acl:
+```
+This variable sets a bunch of settings regarding the ACLs in consul. YOU NEED TO EDIT IT if you decide to enable ACLs on the cluster (you might want to look into `lookup plugins` to fetch tokens from a secret manager, like [vault](https://docs.ansible.com/ansible/latest/collections/community/hashi_vault/hashi_vault_lookup.html) or [bitwarden](https://docs.ansible.com/ansible/latest/collections/community/general/bitwarden_lookup.html)).
 
 ```yaml
 hashi_consul_tls:
@@ -67,14 +72,14 @@ hashi_consul_tls:
 This variable sets up all config to use TLS certificates with consul.
 
 ```yaml
+hashi_consul_dns:
+```
+This variable sets up the dns configuration for the consul server/agent.
+
+```yaml
 hashi_consul_ports:
 ```
 This variable sets up all of the ports used for consul communications. They default to the consul default values.
-
-```yaml
-hashi_consul_acl:
-```
-This variable sets a bunch of settings regarding the ACLs in consul. YOU NEED TO EDIT IT if you decide to enable ACLs on the cluster (you might want to look into `lookup plugins` to fetch tokens from a secret manager, like [vault](https://docs.ansible.com/ansible/latest/collections/community/hashi_vault/hashi_vault_lookup.html) or [bitwarden](https://docs.ansible.com/ansible/latest/collections/community/general/bitwarden_lookup.html)).
 
 Dependencies
 ------------
