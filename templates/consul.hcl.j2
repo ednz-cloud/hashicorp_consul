@@ -1,89 +1,22 @@
 # {{ ansible_managed }}
-domain = "{{ hashi_consul_domain }}"
-datacenter = "{{ hashi_consul_datacenter }}"
-server = {{ hashi_consul_server_enable|lower }}
-data_dir = "{{ hashi_consul_data_dir }}"
-bind_addr = "{{ hashi_consul_bind_addr }}"
-advertise_addr = "{{ hashi_consul_advertise_addr }}"
-log_level = "{{ hashi_consul_log_level }}"
-encrypt = "{{ hashi_consul_server['encrypt'] }}"
-enable_syslog = {{ hashi_consul_server['enable_syslog']|lower }}
-leave_on_terminate = {{ hashi_consul_server['leave_on_terminate']|lower }}
-rejoin_after_leave = {{ hashi_consul_server['rejoin_after_leave']|lower }}
-enable_script_checks = {{ hashi_consul_server['enable_script_checks']|lower }}
-connect {
-  enabled = {{ hashi_consul_connect_enable|lower }}
-}
-dns_config = {
-    enable_truncate = true
-    only_passing = true
+{% for item in hashi_consul_general %}
+{{ item }} = {{ hashi_consul_general[item]|to_hcl(indent_level=0) }}
+{% endfor %}
+
+dns_config = {{ hashi_consul_dns|to_hcl(indent_level=0) }}
+
+ports {
+{% for item in hashi_consul_ports %}
+  {{ item }} = {{ hashi_consul_ports[item]|to_hcl(indent_level=1) }}
+{% endfor %}
 }
 
 {% if hashi_consul_tls_enable %}
 tls {
-  defaults {
-    ca_file = "{{ hashi_consul_tls['ca_file'] }}"
-    cert_file = "{{ hashi_consul_tls['cert_file'] }}"
-    key_file = "{{ hashi_consul_tls['key_file'] }}"
-    verify_incoming = {{ hashi_consul_tls['verify_incoming']|lower }}
-    verify_outgoing = {{ hashi_consul_tls['verify_outgoing']|lower }}
-  }
+{% for item in hashi_consul_tls %}
+  {{ item }} = {{ hashi_consul_tls[item]|to_hcl(indent_level=1) }}
+{% endfor %}
 }
 
 {% endif %}
-ports {
-  dns = {{ hashi_consul_server_ports['dns'] }}
-  http = {{ hashi_consul_server_ports['http'] }}
-  https = {{ hashi_consul_server_ports['https'] }}
-  grpc = {{ hashi_consul_server_ports['grpc'] }}
-  server = {{ hashi_consul_server_ports['server'] }}
-  serf_lan = {{ hashi_consul_server_ports['serf_lan'] }}
-  serf_wan = {{ hashi_consul_server_ports['serf_wan'] }}
-  sidecar_min_port = {{ hashi_consul_server_ports['sidecar_min_port'] }}
-  sidecar_max_port = {{ hashi_consul_server_ports['sidecar_max_port'] }}
-  expose_min_port = {{ hashi_consul_server_ports['expose_min_port'] }}
-  expose_max_port = {{ hashi_consul_server_ports['expose_max_port'] }}
-}
-
-{% if hashi_consul_server_enable %}
-## This is a consul server
-node_name = "{{ ansible_hostname }}"
-primary_datacenter = "{{ hashi_consul_primary_datacenter }}"
-client_addr = "{{ hashi_consul_client_addr }}"
-ui_config {
-  enabled = {{ hashi_consul_server['ui']|lower }}
-}
-bootstrap_expect = {{ hashi_consul_server['bootstrap_expect'] }}
-retry_join = [{% for item in hashi_consul_server['retry_join'] %}"{{ item }}"{% if not loop.last %},{% endif %}{% endfor %}]
-acl = {
-    enabled = {{ hashi_consul_acl_enable|lower }}
-{% if hashi_consul_acl_enable %}
-    default_policy = "{{ hashi_consul_acl['default_policy'] }}"
-    enable_token_persistence = {{ hashi_consul_acl['enable_token_persistence']|lower }}
-{% if hashi_consul_acl['token_initial_management'] != None %}
-    tokens {
-      initial_management = "{{ hashi_consul_acl['token_initial_management'] }}"
-{% if hashi_consul_acl['default_policy'] == 'deny' %}
-      agent = "{{ hashi_consul_acl['token_agent'] }}"
-{% endif %}
-    }
-{% endif %}
-{% endif %}
-}
-
-{% else %}
-## This is a consul client
-retry_join = [{% for item in hashi_consul_client['start_join'] %}"{{ item }}"{% if not loop.last %},{% endif %}{% endfor %}]
-acl = {
-    enabled = {{ hashi_consul_acl_enable|lower }}
-{% if hashi_consul_acl_enable %}
-    default_policy = "{{ hashi_consul_acl['default_policy'] }}"
-{% if hashi_consul_acl['token_agent'] != None %}
-    tokens {
-      agent = "{{ hashi_consul_acl['token_agent'] }}"
-    }
-{% endif %}
-{% endif %}
-}
-
-{% endif %}
+acl = {{ hashi_consul_acl|to_hcl(indent_level=0) }}
