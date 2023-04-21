@@ -4,41 +4,61 @@ hashi_consul_install: true
 hashi_consul_start_service: true
 hashi_consul_version: latest
 hashi_consul_deploy_method: host  # deployment method, either host or docker.
-hashi_consul_env_variables: []
-hashi_consul_domain: consul
-hashi_consul_datacenter: dc1
-hashi_consul_primary_datacenter: "{{ hashi_consul_datacenter }}"
-hashi_consul_data_dir: /opt/consul
-hashi_consul_client_addr: "0.0.0.0"
-hashi_consul_bind_addr: "{{ ansible_default_ipv4.address }}"
-hashi_consul_advertise_addr: "{{ ansible_default_ipv4.address }}"
-hashi_consul_log_level: INFO
-# consul server
-hashi_consul_server_enable: true
-hashi_consul_server:
-  ui: true
+hashi_consul_env_variables: {}
+#! consul general parameters
+hashi_consul_general:
+  domain: consul
+  datacenter: dc1
+  primary_datacenter: dc1
+  client_addr: "0.0.0.0"
+  bind_addr: "{{ ansible_default_ipv4.address }}"
+  advertise_addr: "{{ ansible_default_ipv4.address }}"
+  data_dir: /opt/consul
   encrypt: "{{ 'mysupersecretgossipencryptionkey'|b64encode }}"
+  server: true
   bootstrap_expect: 1
   retry_join:
     - "{{ ansible_default_ipv4.address }}"
+  ui_config:
+    enabled: true
+  connect:
+    enabled: false
   leave_on_terminate: true
   rejoin_after_leave: true
   enable_script_checks: true
   enable_syslog: true
-# consul tls
+  log_level: INFO
+#! consul acl parameters
+hashi_consul_acl:
+  enabled: false
+  default_policy: "allow"
+  enable_token_persistence: true
+  tokens:
+    initial_management: ""
+    agent: ""
+#! consul tls
 hashi_consul_tls_enable: false
 hashi_consul_tls:
-  ca_file: "{{ hashi_consul_data_dir }}/tls/ca.pem"
-  cert_file: "{{ hashi_consul_data_dir }}/tls/cert.pem"
-  key_file: "{{ hashi_consul_data_dir }}/tls/key.pem"
-  verify_incoming: false
-  verify_outgoing: true
-# consul ports
-hashi_consul_server_ports:
+  defaults:
+    ca_file: "{{ hashi_consul_general['data_dir'] }}/tls/ca.pem"
+    cert_file: "{{ hashi_consul_general['data_dir'] }}/tls/cert.pem"
+    key_file: "{{ hashi_consul_general['data_dir'] }}/tls/key.pem"
+    verify_incoming: false
+    verify_outgoing: true
+  grpc: {}
+  https: {}
+#! consul dns config
+hashi_consul_dns:
+  allow_stale: true
+  enable_truncate: true
+  only_passing: true
+#! consul ports
+hashi_consul_ports:
   dns: 8600
   http: 8500
   https: -1
   grpc: 8502
+  grpc_tls: 8503
   server: 8300
   serf_lan: 8301
   serf_wan: 8302
@@ -46,16 +66,3 @@ hashi_consul_server_ports:
   sidecar_max_port: 21255
   expose_min_port: 21500
   expose_max_port: 21755
-# consul client
-hashi_consul_client:
-  start_join:
-    - "{{ ansible_default_ipv4.address }}"
-# consul connect
-hashi_consul_connect_enable: false
-# consul acl
-hashi_consul_acl_enable: false
-hashi_consul_acl:
-  default_policy: "allow"
-  enable_token_persistence: true
-  token_initial_management: ""
-  token_agent: ""

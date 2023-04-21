@@ -28,9 +28,9 @@
     group: "{{ hashi_consul_group }}"
     mode: '0755'
 
-- name: "Create directory {{ hashi_consul_data_dir }}"
+- name: "Create directory {{ hashi_consul_general['data_dir'] }}"
   ansible.builtin.file:
-    path: "{{ hashi_consul_data_dir }}"
+    path: "{{ hashi_consul_general['data_dir'] }}"
     state: directory
     owner: "{{ hashi_consul_user }}"
     group: "{{ hashi_consul_group }}"
