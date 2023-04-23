@@ -40,7 +40,7 @@ def test_consul_storage(host):
 
 def test_consul_service_file(host):
     """Validate consul service file."""
-    lib_systemd_system_consul_service = host.file("/lib/systemd/system/consul.service")
+    lib_systemd_system_consul_service = host.file("/etc/systemd/system/consul.service")
     assert lib_systemd_system_consul_service.exists
     assert lib_systemd_system_consul_service.user == "root"
     assert lib_systemd_system_consul_service.group == "root"
@@ -56,7 +56,7 @@ def test_consul_service(host):
     assert consul_service.systemd_properties["User"] == "consul"
     assert consul_service.systemd_properties["Group"] == "consul"
     assert consul_service.systemd_properties["EnvironmentFiles"] == "/etc/consul.d/consul.env (ignore_errors=yes)"
-    assert consul_service.systemd_properties["FragmentPath"] == "/lib/systemd/system/consul.service"
+    assert consul_service.systemd_properties["FragmentPath"] == "/etc/systemd/system/consul.service"
 
 def test_consul_interaction(host):
     """Validate interaction with consul with acl enabled."""
