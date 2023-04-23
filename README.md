@@ -7,23 +7,7 @@ This role install and configure consul on **debian-based** distributions.
 Requirements
 ------------
 
-**IMPORTANT**: This role uses a built-in [filter_plugin](https://docs.ansible.com/ansible/latest/plugins/filter.html), that helps converting YAML variables to HCL format. While the defaults on this role should provide you with enough configuration to get a production-grade consul up and running, you can also add more in case you need some specifics. Each additional value should be placed in the corresponding map (see variables details below). The key should match EXACTLY that of the configuration file (see consul [documentation](https://developer.hashicorp.com/consul/docs/agent/config/config-files)), and the value will be converted automatically to match hcl syntax.
-
-For now, only the root variables(not inside of a block) and some specific blocks are supported (see variables below), but I will be adding more.
-
-Example: to add the root [limits](https://developer.hashicorp.com/consul/docs/agent/config/config-files#limits) block (which is not present by default), you would need to add the following under `hashi_consul_general`:
-
-```yaml
-hashi_consul_general:
-  limits:
-    http_max_conns_per_client: 400
-```
-This will generate a new hcl block like:
-```
-limits = {
-  http_max_conns_per_client = 400
-}
-```
+None.
 
 Role Variables
 --------------
@@ -57,29 +41,14 @@ hashi_consul_env_variables: # by default, set to {}
 This value is a list of key/value that will populate the `consul.env` file. You do not have to capitalize the KEYS, as it will be done automatically.
 
 ```yaml
-hashi_consul_general:
+hashi_consul_data_dir: "/opt/consul" # by default, set to /opt/consul
 ```
-This variable sets a bunch of configuration parameters for consul. For more information on all of them, please check the [documentation](https://developer.hashicorp.com/consul/docs/agent/config/config-files). Each key under it HAS to match a configuration key provided by the documentation, since these will be used to generate the config file. Most options (even the ones not present by default in the defaults) should work, however, the filter_plugin used to convert YAML to HCL is still not considered stable, so you might encounter some issues. Please let me know if you do.
+This value defines the path where consul data will be stored on the node. Defaults to `/opt/consul`.
 
 ```yaml
-hashi_consul_acl:
+hashi_consul_configuration: {} # by default, set to a simple configuration
 ```
-This variable sets a bunch of settings regarding the ACLs in consul. YOU NEED TO EDIT IT if you decide to enable ACLs on the cluster (you might want to look into `lookup plugins` to fetch tokens from a secret manager, like [vault](https://docs.ansible.com/ansible/latest/collections/community/hashi_vault/hashi_vault_lookup.html) or [bitwarden](https://docs.ansible.com/ansible/latest/collections/community/general/bitwarden_lookup.html)).
-
-```yaml
-hashi_consul_tls:
-```
-This variable sets up all config to use TLS certificates with consul.
-
-```yaml
-hashi_consul_dns:
-```
-This variable sets up the dns configuration for the consul server/agent.
-
-```yaml
-hashi_consul_ports:
-```
-This variable sets up all of the ports used for consul communications. They default to the consul default values.
+This variable sets all of the configuration parameters for consul. For more information on all of them, please check the [documentation](https://developer.hashicorp.com/consul/docs/agent/config/config-files). This variable is parsed and converted to json format to create the config file, so each key and value should be set according to the documentation. This method of passing configuration allows for compatibility with every configuration parameters that consul has to offer. The defaults are simply here to deploy a simple, single-node consul server without much configuration, and should NOT be used in production. You will want to edit this to deploy production-ready clusters.
 
 Dependencies
 ------------

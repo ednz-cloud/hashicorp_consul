@@ -1,9 +1,14 @@
 ---
 # task/configure file for hashicorp_consul
-- name: "Copy consul.hcl template"
+- name: "Ensure default consul.hcl is removed"
+  ansible.builtin.file:
+    path: /etc/consul.d/consul.hcl
+    state: absent
+
+- name: "Copy consul.json template"
   ansible.builtin.template:
-    src: consul.hcl.j2
-    dest: "{{ hashi_consul_config_dir }}/consul.hcl"
+    src: consul.json.j2
+    dest: "{{ hashi_consul_config_dir }}/consul.json"
     owner: "{{ hashi_consul_user }}"
     group: "{{ hashi_consul_group }}"
     mode: '0600'

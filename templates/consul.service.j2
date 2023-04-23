@@ -3,7 +3,7 @@ Description=Consul
 Documentation=https://developer.hashicorp.com/consul/docs
 Requires=network-online.target
 After=network-online.target
-ConditionFileNotEmpty={{ hashi_consul_config_dir }}/consul.hcl
+ConditionFileNotEmpty={{ hashi_consul_config_dir }}/consul.json
 
 [Service]
 EnvironmentFile=-{{ hashi_consul_config_dir }}/consul.env
