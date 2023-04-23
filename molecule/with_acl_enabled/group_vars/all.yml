@@ -29,7 +29,7 @@ hashi_consul_configuration:
   enable_syslog: true
   log_level: INFO
   acl:
-    enabled: false
+    enabled: true
     default_policy: "deny"
     enable_token_persistence: true
     tokens:
