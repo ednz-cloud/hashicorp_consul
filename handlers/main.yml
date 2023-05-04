@@ -1,5 +1,10 @@
 ---
 # handlers file for hashicorp_consul
+- name: "Reload systemd file"
+  ansible.builtin.systemd:
+    daemon_reload: true
+  listen: "systemctl-daemon-reload"
+
 - name: "Enable consul service"
   ansible.builtin.service:
     name: consul
