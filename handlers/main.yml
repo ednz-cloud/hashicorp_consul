@@ -16,4 +16,5 @@
     name: consul
     state: restarted
   listen: "systemctl-restart-consul"
+  throttle: 1
   when: hashi_consul_start_service
