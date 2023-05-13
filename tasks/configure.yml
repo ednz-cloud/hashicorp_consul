@@ -23,3 +23,24 @@
     owner: "{{ hashi_consul_user }}"
     group: "{{ hashi_consul_group }}"
     mode: '0600'
+
+- name: "Copy extra configuration files"
+  when: hashi_consul_extra_files
+  block:
+    - name: "Create directory {{ hashi_consul_extra_files_dst }}"
+      ansible.builtin.file:
+        path: "{{ hashi_consul_extra_files_dst }}"
+        state: directory
+        owner: "{{ hashi_consul_user }}"
+        group: "{{ hashi_consul_group }}"
+        mode: '0755'
+
+    - name: "Copy extra configuration files"
+      ansible.builtin.template:
+        src: "{{ item }}"
+        dest: "{{ hashi_consul_extra_files_dst }}/{{ (item | basename).split('.')[:-1] | join('.')}}"
+        owner: "{{ hashi_consul_user }}"
+        group: "{{ hashi_consul_group }}"
+        mode: '0600'
+      with_fileglob:
+        - "{{ hashi_consul_extra_files_src }}/*"

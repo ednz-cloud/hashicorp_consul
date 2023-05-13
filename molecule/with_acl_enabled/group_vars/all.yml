@@ -5,6 +5,9 @@ hashi_consul_version: latest
 hashi_consul_deploy_method: host  # deployment method, either host or docker.
 hashi_consul_env_variables: {}
 hashi_consul_data_dir: "/opt/consul"
+hashi_consul_extra_files: false
+hashi_consul_extra_files_src: /tmp/extra_files
+hashi_consul_extra_files_dst: /etc/consul.d/extra_files
 #! consul configuration
 hashi_consul_configuration:
   domain: consul
