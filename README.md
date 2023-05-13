@@ -48,7 +48,8 @@ This value defines the path where consul data will be stored on the node. Defaul
 ```yaml
 hashi_consul_extra_files: false # by default, set to false
 ```
-This variable defines whgit 
+This variable defines whether or not there is extra configuration files to copy to the target. If there are, these extra files are expected to be jinja2 templates located all in the same directory, and will be copied to the specified directory on the target machine.
+
 ```yaml
 hashi_consul_extra_files_src: /tmp/extra_files # by default, set to /tmp/extra_files
 ```
