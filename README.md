@@ -56,7 +56,7 @@ hashi_consul_extra_files_src: /tmp/extra_files # by default, set to /tmp/extra_f
 This variable defines the source directory (without the trailing /) for the extra files to be copied in case there are some.
 
 ```yaml
-hashi_consul_extra_files_dst: /etc/nomad.d/extra_files # by default, set to /etc/nomad.d/extra_files
+hashi_consul_extra_files_dst: /etc/consul.d/extra_files # by default, set to /etc/consul.d/extra_files
 ```
 This variable defines the destination directory (without the trailing /) for the extra files to be copied.
 
