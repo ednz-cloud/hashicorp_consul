@@ -19,6 +19,11 @@ hashi_consul_install: true # by default, set to true
 This variable defines if the consul package is to be installed or not before configuring. If you install consul using another task, you can set this to `false`.
 
 ```yaml
+hashi_consul_auto_update: false # by default, set to false
+```
+This variable allows you to choose to automatically update consul if a newer version is available. Updating consul is usually pretty safe if done on a regular basis, but for better control over the upgrade process, see `hashi_consul_version`.
+
+```yaml
 hashi_consul_start_service: true
 ```
 This variable defines if the consul service should be started once it has been configured. This is usefull in case you're using this role to build golden images, in which case you might want to only enable the service, to have it start on the next boot (when the image is launched)
@@ -59,6 +64,15 @@ This variable defines the source directory (without the trailing /) for the extr
 hashi_consul_extra_files_dst: /etc/consul.d/extra_files # by default, set to /etc/consul.d/extra_files
 ```
 This variable defines the destination directory (without the trailing /) for the extra files to be copied.
+
+```yaml
+hashi_consul_envoy_install: false # by default, set to false
+```
+This variable allows you to install the envoy binary on the consul node, in case you need to deploy connect proxies. This feature is usefull when deploying consul agents that will handle services in the service mesh. It is NOT required on server nodes (since they most likely wont have services running in service mesh).
+```yaml
+hashi_consul_envoy_version: latest # by default, set to latest
+```
+This variable defines which version of envoy to install in case `hashi_consul_envoy_install` is set to true. **IMPORTANT:** The `latest` version set by default is not guaranteed to work, please refer to the [documentation](https://developer.hashicorp.com/consul/docs/connect/proxies/envoy#supported-versions) for informations about the support matrix for consul and envoy.
 
 ```yaml
 hashi_consul_configuration: {} # by default, set to a simple configuration
