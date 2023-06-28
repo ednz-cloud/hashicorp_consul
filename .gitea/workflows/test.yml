@@ -9,8 +9,8 @@ jobs:
     container:
       image: git.ednz.fr/container-factory/ansible-runner:act-latest
       credentials:
-         username: ${{ secrets.ACTIONS_USER }}
-         password: ${{ secrets.ACTIONS_TOKEN }}
+        username: ${{ secrets.ACTIONS_USER }}
+        password: ${{ secrets.ACTIONS_TOKEN }}
     strategy:
       matrix:
         test_os: [debian11, debian12, ubuntu2004, ubuntu2204]
@@ -28,7 +28,7 @@ jobs:
         working-directory: ${{ gitea.workspace }}
 
       - name: "YAML lint"
-        run: yamllint . -f github -c .yamllint
+        run: yamllint . -f colored -c .yamllint
         working-directory: ${{ gitea.workspace }}
 
       - name: "Molecule | OS: ${{ matrix.test_os }} Scenario: ${{ matrix.scenario }}"
