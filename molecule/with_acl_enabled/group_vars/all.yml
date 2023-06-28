@@ -10,7 +10,7 @@ hashi_consul_extra_files: false
 hashi_consul_extra_files_src: /tmp/extra_files
 hashi_consul_extra_files_dst: /etc/consul.d/extra_files
 hashi_consul_envoy_install: true
-hashi_consul_envoy_version: latest
+hashi_consul_envoy_version: v1.25.7
 #! consul configuration
 hashi_consul_configuration:
   domain: consul
