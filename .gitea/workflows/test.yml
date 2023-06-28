@@ -6,6 +6,11 @@ jobs:
   test:
     name: Molecule testing
     runs-on: ubuntu-latest
+    container:
+      image: git.ednz.fr/container-factory/ansible-runner:act-latest
+      credentials:
+         username: ${{ secrets.ACTIONS_USER }}
+         password: ${{ secrets.ACTIONS_TOKEN }}
     strategy:
       matrix:
         test_os: [debian11, debian12, ubuntu2004, ubuntu2204]
@@ -14,21 +19,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Login to container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ secrets.ACTIONS_REGISTRY }}
-          username: ${{ secrets.ACTIONS_USER }}
-          password: ${{ secrets.ACTIONS_TOKEN }}
+      - name: "Ansible lint"
+        run: ansible-lint
+        working-directory: ${{ gitea.workspace }}
+
+      - name: "YAML lint"
+        run: yamllint . -c .yamllint
+        working-directory: ${{ gitea.workspace }}
 
       - name: "Molecule | OS: ${{ matrix.test_os }} Scenario: ${{ matrix.scenario }}"
-        uses: kohlerdominik/docker-run-action@v1
-        with:
-          image: ${{ secrets.ACTIONS_REGISTRY }}/container-factory/ansible-runner:latest
-          shell: /bin/bash
-          workdir: ${{ gitea.workspace }}
-          environment: |
-            MOLECULE_TEST_OS=${{ matrix.test_os }}
-          volumes: |
-            ${{ gitea.workspace }}:${{ gitea.workspace }}
-          run: molecule test -s ${{ matrix.scenario }}
+        run: molecule test -s ${{ matrix.scenario }}
+        shell: bash
+        working-directory: ${{ gitea.workspace }}
+        env:
+          MOLECULE_TEST_OS: ${{ matrix.test_os }}
