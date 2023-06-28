@@ -28,7 +28,7 @@ jobs:
         working-directory: ${{ gitea.workspace }}
 
       - name: "YAML lint"
-        run: yamllint . -c .yamllint
+        run: yamllint . -f -c .yamllint
         working-directory: ${{ gitea.workspace }}
 
       - name: "Molecule | OS: ${{ matrix.test_os }} Scenario: ${{ matrix.scenario }}"
