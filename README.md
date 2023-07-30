@@ -82,7 +82,8 @@ This variable sets all of the configuration parameters for consul. For more info
 Dependencies
 ------------
 
-This role has a task that installs its own dependencies located in `task/prerequisites.yml`, so that you don't need to manage them. This role requires both `ednxzu.manage_repositories` and `ednxzu.manage_apt_packages` to install consul.
+`ednxzu.manage_repositories` to configure the hashicorp apt repository.
+`ednxzu.manage_apt_packages` to install consul.
 
 Example Playbook
 ----------------

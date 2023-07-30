@@ -1,8 +1,5 @@
 ---
 # vars file for hashicorp_consul
-hashi_consul_prerequisites_roles:
-  - ednxzu.manage_repositories
-  - ednxzu.manage_apt_packages
 hashi_consul_user: consul
 hashi_consul_group: consul
 hashi_consul_config_dir: "/etc/consul.d"
