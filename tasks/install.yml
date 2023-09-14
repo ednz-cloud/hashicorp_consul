@@ -8,6 +8,9 @@
     manage_repositories_enable_custom_repo: true
     manage_repositories_custom_repo: "{{ hashi_consul_repository }}"
 
+- name: "Force cache update"
+  ansible.builtin.meta: flush_handlers
+
 - name: "Install consul:{{ hashi_consul_version }}"
   ansible.builtin.include_role:
     name: ednxzu.manage_apt_packages
