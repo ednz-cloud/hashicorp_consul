@@ -16,7 +16,7 @@
               - stat_etc_hosts.stat.exists
               - stat_etc_hosts.stat.isreg
               - stat_etc_hosts.stat.pw_name == 'root'
-              - stat_etc_hosts.stat.gr_name == 'adm'
+              - stat_etc_hosts.stat.gr_name == 'root'
 
     - name: "Test: consul user and group"
       block:
