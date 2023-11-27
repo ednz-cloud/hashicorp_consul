@@ -63,6 +63,7 @@
           ansible.builtin.slurp:
             src: "/etc/consul.d/consul.json"
           register: slurp_etc_consul_d_consul_json
+          become: true
 
         - name: "Verify directory /etc/consul.d"
           ansible.builtin.assert:
@@ -114,6 +115,7 @@
           ansible.builtin.slurp:
             src: "/etc/systemd/system/consul.service"
           register: slurp_etc_systemd_system_consul_service
+          become: true
 
         - name: "Verify service consul"
           ansible.builtin.assert:
