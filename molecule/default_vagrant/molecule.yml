@@ -9,7 +9,7 @@ driver:
     name: libvirt
 platforms:
   - name: instance
-    box: generic/debian12
+    box: generic/${MOLECULE_TEST_OS}
     cpus: 4
     memory: 4096
 provisioner:
