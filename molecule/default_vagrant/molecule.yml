@@ -9,7 +9,7 @@ driver:
     name: libvirt
 platforms:
   - name: instance
-    box: bento/ubuntu-22.04
+    box: generic/debian12
     cpus: 4
     memory: 4096
 provisioner:

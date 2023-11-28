@@ -1,7 +1,7 @@
 ---
 - name: Verify
   hosts: all
-  gather_facts: false
+  gather_facts: true
   tasks:
     - name: "Test: file /etc/hosts"
       block:
@@ -11,12 +11,16 @@
           register: stat_etc_hosts
 
         - name: "Verify file /etc/hosts"
+          vars:
+            etc_hosts_group:
+              ubuntu: "adm"
+              debian: "root"
           ansible.builtin.assert:
             that:
               - stat_etc_hosts.stat.exists
               - stat_etc_hosts.stat.isreg
               - stat_etc_hosts.stat.pw_name == 'root'
-              - stat_etc_hosts.stat.gr_name == 'adm'
+              - stat_etc_hosts.stat.gr_name == etc_hosts_group[(ansible_distribution|lower)]
 
     - name: "Test: consul user and group"
       block:
