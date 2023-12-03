@@ -4,7 +4,6 @@
   ansible.builtin.file:
     path: /etc/consul.d/consul.hcl
     state: absent
-  
 
 - name: "Copy consul.json template"
   ansible.builtin.template:
@@ -13,7 +12,6 @@
     owner: "{{ hashi_consul_user }}"
     group: "{{ hashi_consul_group }}"
     mode: '0600'
-  
   notify:
     - "systemctl-enable-consul"
     - "systemctl-restart-consul"
