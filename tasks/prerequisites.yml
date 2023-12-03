@@ -4,7 +4,6 @@
   ansible.builtin.group:
     name: "{{ hashi_consul_group }}"
     state: present
-  become: true
 
 - name: "Create user {{ hashi_consul_user }}"
   ansible.builtin.user:
@@ -12,7 +11,6 @@
     group: "{{ hashi_consul_group }}"
     shell: /bin/false
     state: present
-  become: true
 
 - name: "Create directory {{ hashi_consul_config_dir }}"
   ansible.builtin.file:
@@ -21,7 +19,6 @@
     owner: "{{ hashi_consul_user }}"
     group: "{{ hashi_consul_group }}"
     mode: '0755'
-  become: true
 
 - name: "Create directory {{ hashi_consul_data_dir}}"
   ansible.builtin.file:
@@ -30,4 +27,3 @@
     owner: "{{ hashi_consul_user }}"
     group: "{{ hashi_consul_group }}"
     mode: '0755'
-  become: true
