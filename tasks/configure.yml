@@ -1,28 +1,43 @@
 ---
 # task/configure file for hashicorp_consul
-- name: "Ensure default consul.hcl is removed"
-  ansible.builtin.file:
-    path: /etc/consul.d/consul.hcl
-    state: absent
+- name: "Configure for host installation"
+  when: hashi_consul_deploy_method == 'host'
+  block:
+    - name: "Ensure default consul.hcl is removed"
+      ansible.builtin.file:
+        path: /etc/consul.d/consul.hcl
+        state: absent
 
-- name: "Copy consul.json template"
-  ansible.builtin.template:
-    src: consul.json.j2
-    dest: "{{ hashi_consul_config_dir }}/consul.json"
-    owner: "{{ hashi_consul_user }}"
-    group: "{{ hashi_consul_group }}"
-    mode: '0600'
-  notify:
-    - "systemctl-enable-consul"
-    - "systemctl-restart-consul"
+    - name: "Copy consul.json template"
+      ansible.builtin.template:
+        src: consul.json.j2
+        dest: "{{ hashi_consul_config_dir }}/consul.json"
+        owner: "{{ hashi_consul_user }}"
+        group: "{{ hashi_consul_group }}"
+        mode: '0600'
+      notify:
+        - "systemctl-enable-consul"
+        - "systemctl-restart-consul"
 
-- name: "Create consul.env"
-  ansible.builtin.template:
-    src: consul.env.j2
-    dest: "{{ hashi_consul_config_dir }}/consul.env"
-    owner: "{{ hashi_consul_user }}"
-    group: "{{ hashi_consul_group }}"
-    mode: '0600'
+    - name: "Create consul.env"
+      ansible.builtin.template:
+        src: consul.env.j2
+        dest: "{{ hashi_consul_config_dir }}/consul.env"
+        owner: "{{ hashi_consul_user }}"
+        group: "{{ hashi_consul_group }}"
+        mode: '0600'
+
+- name: "Configure for docker installation"
+  when: hashi_consul_deploy_method == 'docker'
+  block:
+    - name: "Copy consul.json template"
+      ansible.builtin.template:
+        src: consul.json.j2
+        dest: "{{ hashi_consul_config_dir }}/consul.json"
+        owner: "{{ hashi_consul_user }}"
+        group: "{{ hashi_consul_group }}"
+        mode: '0600'
+
 
 - name: "Copy extra configuration files"
   when: hashi_consul_extra_files

@@ -1,8 +1,9 @@
 ---
 # vars file for hashicorp_consul
-hashi_consul_user: consul
-hashi_consul_group: consul
+hashi_consul_user: "{{ '100' if hashi_consul_deploy_method == 'docker' else 'consul' }}"
+hashi_consul_group: "{{ '1000' if hashi_consul_deploy_method == 'docker' else 'consul' }}"
 hashi_consul_config_dir: "/etc/consul.d"
+hashi_consul_docker_image: hashicorp/consul
 hashi_consul_envoy_github_api: https://api.github.com/repos/envoyproxy/envoy
 hashi_consul_envoy_github_url: https://github.com/envoyproxy/envoy
 hashi_consul_envoy_path: "/usr/local/bin/envoy"
