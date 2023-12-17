@@ -3,12 +3,12 @@
 - name: "Import prerequisites.yml"
   ansible.builtin.include_tasks: prerequisites.yml
 
-- name: "Import install.yml"
-  ansible.builtin.include_tasks: "install_{{ hashi_consul_deploy_method }}.yml"
-
 - name: "Import install_envoy.yml"
   ansible.builtin.include_tasks: install_envoy.yml
   when: hashi_consul_envoy_install
 
 - name: "Import configure.yml"
   ansible.builtin.include_tasks: configure.yml
+
+- name: "Import install.yml"
+  ansible.builtin.include_tasks: "install_{{ hashi_consul_deploy_method }}.yml"

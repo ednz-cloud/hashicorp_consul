@@ -30,6 +30,14 @@
 - name: "Copy extra configuration files"
   when: hashi_consul_extra_files
   block:
+    - name: Update the list if the condition is true
+      ansible.builtin.set_fact:
+        hashi_consul_container_volume_map: "{{
+          hashi_consul_container_volume_map + [
+          hashi_consul_extra_files_dst + ':' + hashi_consul_extra_files_dst
+          ]
+          }}"
+
     - name: "Create directory {{ hashi_consul_extra_files_dst }}"
       ansible.builtin.file:
         path: "{{ hashi_consul_extra_files_dst }}"

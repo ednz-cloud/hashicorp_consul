@@ -2,11 +2,11 @@
 hashi_consul_install: true
 hashi_consul_auto_update: true
 hashi_consul_start_service: true
-hashi_consul_version: latest
-hashi_consul_deploy_method: host  # deployment method, either host or docker.
+hashi_consul_version: 1.17.1-ubi
+hashi_consul_deploy_method: docker  # deployment method, either host or docker.
 hashi_consul_env_variables: {}
 hashi_consul_data_dir: "/opt/consul"
-hashi_consul_extra_files: false
+hashi_consul_extra_files: true
 hashi_consul_extra_files_src: /tmp/extra_files
 hashi_consul_extra_files_dst: /etc/consul.d/extra_files
 hashi_consul_envoy_install: true
@@ -32,7 +32,7 @@ hashi_consul_configuration:
   leave_on_terminate: true
   rejoin_after_leave: true
   enable_script_checks: true
-  enable_syslog: true
+  enable_syslog: false
   log_level: INFO
   acl:
     enabled: true

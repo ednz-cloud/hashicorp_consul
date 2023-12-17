@@ -12,11 +12,8 @@ hashi_consul_envoy_arch_map:
   x86_64: 'x86_64'
   aarch64: 'aarch64'
 hashi_consul_container_volume_map:
-  base:
-    - "{{ hashi_consul_config_dir }}:/consul/config"
-    - "{{ hashi_consul_data_dir }}:/consul/data"
-  extra:
-    - "{{ hashi_consul_extra_files_dst }}:{{ hashi_consul_extra_files_dst }}"
+  - "{{ hashi_consul_config_dir }}:/consul/config"
+  - "{{ hashi_consul_data_dir }}:/consul/data"
 hashi_consul_envoy_arch: "{{ hashi_consul_envoy_arch_map[ansible_architecture] | default(ansible_architecture) }}"
 hashi_consul_repository:
   - name: hashicorp
