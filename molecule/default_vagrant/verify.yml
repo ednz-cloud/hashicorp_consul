@@ -4,30 +4,6 @@
   gather_facts: true
   become: true
   tasks:
-    #- name: "Test: consul user and group"
-    #  block:
-    #    - name: "Getent user consul"
-    #      ansible.builtin.getent:
-    #        database: passwd
-    #        key: consul
-    #      register: consul_user
-    #
-    #    - name: "Getent group consul"
-    #      ansible.builtin.getent:
-    #        database: group
-    #        key: consul
-    #      register: consul_group
-    #
-    #    - name: "Verify consul user and group"
-    #      ansible.builtin.assert:
-    #        that:
-    #          - not consul_user.failed
-    #          - not consul_group.failed
-    #          - "'consul' in consul_user.ansible_facts.getent_passwd.keys()"
-    #          - "'/home/consul' in consul_user.ansible_facts.getent_passwd['consul']"
-    #          - "'/bin/false' in consul_user.ansible_facts.getent_passwd['consul']"
-    #          - "'consul' in consul_group.ansible_facts.getent_group.keys()"
-
     - name: "Test: directory /etc/consul.d"
       block:
         - name: "Stat directory /etc/consul.d"
@@ -37,7 +13,7 @@
 
         - name: "Stat file /etc/default/consul"
           ansible.builtin.stat:
-            path: "/etc/consul.d/consul.env"
+            path: "/etc/default/consul"
           register: stat_etc_default_consul
 
         - name: "Stat file /etc/consul.d/consul.json"
@@ -55,8 +31,8 @@
             that:
               - stat_etc_consul_d.stat.exists
               - stat_etc_consul_d.stat.isdir
-              - stat_etc_consul_d.stat.pw_name == 'consul'
-              - stat_etc_consul_d.stat.gr_name == 'consul'
+              - (stat_etc_consul_d.stat.uid | int) == 100
+              - (stat_etc_consul_d.stat.gid | int) == 1000
               - stat_etc_consul_d.stat.mode == '0755'
               - stat_etc_default_consul.stat.exists
               - stat_etc_default_consul.stat.isreg
@@ -65,8 +41,8 @@
               - stat_etc_default_consul.stat.mode == '0600'
               - stat_etc_consul_d_consul_json.stat.exists
               - stat_etc_consul_d_consul_json.stat.isreg
-              - stat_etc_consul_d_consul_json.stat.pw_name == 'consul'
-              - stat_etc_consul_d_consul_json.stat.gr_name == 'consul'
+              - (stat_etc_consul_d_consul_json.stat.uid | int) == 100
+              - (stat_etc_consul_d_consul_json.stat.gid | int) == 1000
               - stat_etc_consul_d_consul_json.stat.mode == '0600'
               - slurp_etc_consul_d_consul_json.content != ''
 
@@ -82,8 +58,8 @@
             that:
               - stat_opt_consul.stat.exists
               - stat_opt_consul.stat.isdir
-              - stat_opt_consul.stat.pw_name == 'consul'
-              - stat_opt_consul.stat.gr_name == 'consul'
+              - (stat_opt_consul.stat.uid | int) == 100
+              - (stat_opt_consul.stat.gid | int) == 1000
               - stat_opt_consul.stat.mode == '0755'
 
     - name: "Test: service consul"
@@ -93,7 +69,7 @@
 
         - name: "Stat file /etc/systemd/system/consul_container.service"
           ansible.builtin.stat:
-            path: "/etc/systemd/system/consul.service"
+            path: "/etc/systemd/system/consul_container.service"
           register: stat_etc_systemd_system_consul_container_service
 
         - name: "Slurp file /etc/systemd/system/consul_container.service"
