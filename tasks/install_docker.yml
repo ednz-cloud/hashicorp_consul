@@ -9,9 +9,14 @@
     docker_systemd_service_container_env: "{{ hashi_consul_env_variables }}"
     docker_systemd_service_flags:
       - network: host
-      - volume:
-          - "{{ hashi_consul_config_dir }}:/consul/config"
-          - "{{ hashi_consul_data_dir }}:/consul/data"
+      - volume: "{{
+          (hashi_consul_extra_files |
+          ternary(
+          hashi_consul_container_volume_map.base + hashi_consul_container_volume_map.extra,
+          hashi_consul_container_volume_map.base
+          )) |
+          default([])
+          }}"
     docker_systemd_service_name: "{{ docker_systemd_service_container_name }}_container"
     docker_systemd_service_state: "{{ 'started' if hashi_consul_start_service else 'stopped'}}"
     docker_systemd_service_restart: "{{ true if hashi_consul_start_service else false}}"

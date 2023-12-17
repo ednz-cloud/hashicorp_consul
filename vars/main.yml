@@ -3,6 +3,7 @@
 hashi_consul_user: "{{ '100' if hashi_consul_deploy_method == 'docker' else 'consul' }}"
 hashi_consul_group: "{{ '1000' if hashi_consul_deploy_method == 'docker' else 'consul' }}"
 hashi_consul_config_dir: "/etc/consul.d"
+hashi_consul_service_name: "consul{{ '_container' if hashi_consul_deploy_method == 'docker' }}"
 hashi_consul_docker_image: hashicorp/consul
 hashi_consul_envoy_github_api: https://api.github.com/repos/envoyproxy/envoy
 hashi_consul_envoy_github_url: https://github.com/envoyproxy/envoy
@@ -10,6 +11,12 @@ hashi_consul_envoy_path: "/usr/local/bin/envoy"
 hashi_consul_envoy_arch_map:
   x86_64: 'x86_64'
   aarch64: 'aarch64'
+hashi_consul_container_volume_map:
+  base:
+    - "{{ hashi_consul_config_dir }}:/consul/config"
+    - "{{ hashi_consul_data_dir }}:/consul/data"
+  extra:
+    - "{{ hashi_consul_extra_files_dst }}:{{ hashi_consul_extra_files_dst }}"
 hashi_consul_envoy_arch: "{{ hashi_consul_envoy_arch_map[ansible_architecture] | default(ansible_architecture) }}"
 hashi_consul_repository:
   - name: hashicorp
