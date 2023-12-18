@@ -7,8 +7,13 @@
   ansible.builtin.include_tasks: install_envoy.yml
   when: hashi_consul_envoy_install
 
+- name: "Import install_host.yml"
+  ansible.builtin.include_tasks: "install_host.yml"
+  when: hashi_consul_deploy_method == 'host'
+
 - name: "Import configure.yml"
   ansible.builtin.include_tasks: configure.yml
 
-- name: "Import install.yml"
-  ansible.builtin.include_tasks: "install_{{ hashi_consul_deploy_method }}.yml"
+- name: "Import install_docker.yml"
+  ansible.builtin.include_tasks: "install_docker.yml"
+  when: hashi_consul_deploy_method == 'docker'
