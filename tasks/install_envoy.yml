@@ -1,5 +1,13 @@
 ---
 # task/install_envoy file for hashicorp_consul
+- name: Update the list if the condition is true
+  ansible.builtin.set_fact:
+    hashi_consul_container_volume_map: "{{
+      hashi_consul_container_volume_map + [
+      hashi_consul_envoy_path + ':' + hashi_consul_envoy_path
+      ]
+      }}"
+
 - name: "Get release for envoy:{{ hashi_consul_envoy_version }}"
   vars:
     _envoy_url_ext: "{% if hashi_consul_envoy_version == 'latest'%}releases{% else %}releases/tags{% endif %}"

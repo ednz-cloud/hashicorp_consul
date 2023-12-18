@@ -7,13 +7,13 @@
 
 - name: "Enable consul service"
   ansible.builtin.service:
-    name: consul
+    name: "{{ hashi_consul_service_name }}"
     enabled: true
   listen: "systemctl-enable-consul"
 
 - name: "Start consul service"
   ansible.builtin.service:
-    name: consul
+    name: "{{ hashi_consul_service_name }}"
     state: restarted
   listen: "systemctl-restart-consul"
   throttle: 1

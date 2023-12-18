@@ -1,9 +1,20 @@
 ---
 # task/configure file for hashicorp_consul
-- name: "Ensure default consul.hcl is removed"
-  ansible.builtin.file:
-    path: /etc/consul.d/consul.hcl
-    state: absent
+- name: "Configure for host installation"
+  when: hashi_consul_deploy_method == 'host'
+  block:
+    - name: "Ensure default consul.hcl is removed"
+      ansible.builtin.file:
+        path: /etc/consul.d/consul.hcl
+        state: absent
+
+    - name: "Create consul.env"
+      ansible.builtin.template:
+        src: consul.env.j2
+        dest: "{{ hashi_consul_config_dir }}/consul.env"
+        owner: "{{ hashi_consul_user }}"
+        group: "{{ hashi_consul_group }}"
+        mode: '0600'
 
 - name: "Copy consul.json template"
   ansible.builtin.template:
@@ -16,17 +27,17 @@
     - "systemctl-enable-consul"
     - "systemctl-restart-consul"
 
-- name: "Create consul.env"
-  ansible.builtin.template:
-    src: consul.env.j2
-    dest: "{{ hashi_consul_config_dir }}/consul.env"
-    owner: "{{ hashi_consul_user }}"
-    group: "{{ hashi_consul_group }}"
-    mode: '0600'
-
 - name: "Copy extra configuration files"
   when: hashi_consul_extra_files
   block:
+    - name: Update the list if the condition is true
+      ansible.builtin.set_fact:
+        hashi_consul_container_volume_map: "{{
+          hashi_consul_container_volume_map + [
+          hashi_consul_extra_files_dst + ':' + hashi_consul_extra_files_dst
+          ]
+          }}"
+
     - name: "Create directory {{ hashi_consul_extra_files_dst }}"
       ansible.builtin.file:
         path: "{{ hashi_consul_extra_files_dst }}"
