@@ -1,5 +1,5 @@
 ---
-# task/install_docker file for deploy_gitea_runner
+# task/install_docker file for hashicorp_consul
 - name: "Include ednxzu.docker_systemd_service"
   ansible.builtin.include_role:
     name: ednxzu.docker_systemd_service

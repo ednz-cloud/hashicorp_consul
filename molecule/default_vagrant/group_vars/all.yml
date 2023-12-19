@@ -7,7 +7,7 @@ hashi_consul_configuration:
   client_addr: "0.0.0.0"
   bind_addr: "{{ ansible_default_ipv4.address }}"
   advertise_addr: "{{ ansible_default_ipv4.address }}"
-  data_dir: "{{ hashi_consul_data_dir }}"
+  data_dir: "/consul/data"
   encrypt: "{{ 'mysupersecretgossipencryptionkey'|b64encode }}"
   server: true
   bootstrap_expect: 1
