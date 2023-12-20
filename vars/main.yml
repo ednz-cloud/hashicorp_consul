@@ -27,7 +27,3 @@ hashi_consul_repository:
       - main
     options:
       Signed-By: "https://apt.releases.hashicorp.com/gpg"
-hashi_consul_packages:
-  - name: consul
-    version: "{{ hashi_consul_version }}"
-    state: "{% if hashi_consul_auto_update %}latest{% else %}present{% endif %}"
