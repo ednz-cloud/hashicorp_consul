@@ -94,9 +94,10 @@
               --env-file /etc/default/consul \
               --network "host" \
               --volume "/etc/consul.d:/consul/config" \
-              --volume "/opt/consul:/consul/data" \
+              --volume "/opt/consul/data:/opt/consul/data" \
               --volume "/usr/local/bin/envoy:/usr/local/bin/envoy" \
               --volume "/etc/consul.d/extra_files:/etc/consul.d/extra_files" \
+              --volume "/opt/consul/tls:/opt/consul/tls" \
               hashicorp/consul:1.17.1-ubi
               ExecStop=/usr/bin/docker stop consul
               SyslogIdentifier=consul

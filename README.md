@@ -69,6 +69,11 @@ hashi_consul_extra_files_dst: /etc/consul.d/extra_files # by default, set to /et
 This variable defines the destination directory (without the trailing /) for the extra files to be copied.
 
 ```yaml
+hashi_consul_extra_container_volumes: [] # by default, set to []
+```
+This variable lets you defines more volumes to mount inside the container when using the `docker` deployment method. This is a list of string in the form: `"/path/on/host:/path/on/container"`. These volumes will not be created/checked before being mounted, so they need to exist prior to running this role.
+
+```yaml
 hashi_consul_envoy_install: false # by default, set to false
 ```
 This variable allows you to install the envoy binary on the consul node, in case you need to deploy connect proxies. This feature is usefull when deploying consul agents that will handle services in the service mesh. It is NOT required on server nodes (since they most likely wont have services running in service mesh).

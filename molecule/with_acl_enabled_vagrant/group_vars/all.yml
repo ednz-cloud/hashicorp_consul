@@ -5,10 +5,12 @@ hashi_consul_start_service: true
 hashi_consul_version: 1.17.1-ubi
 hashi_consul_deploy_method: docker  # deployment method, either host or docker.
 hashi_consul_env_variables: {}
-hashi_consul_data_dir: "/opt/consul"
+hashi_consul_data_dir: "/opt/consul/data"
 hashi_consul_extra_files: true
 hashi_consul_extra_files_src: /tmp/extra_files
 hashi_consul_extra_files_dst: /etc/consul.d/extra_files
+hashi_consul_extra_container_volumes:
+  - "/opt/consul/tls:/opt/consul/tls"
 hashi_consul_envoy_install: true
 hashi_consul_envoy_version: v1.26.3
 #! consul configuration
@@ -19,7 +21,7 @@ hashi_consul_configuration:
   client_addr: "0.0.0.0"
   bind_addr: "{{ ansible_default_ipv4.address }}"
   advertise_addr: "{{ ansible_default_ipv4.address }}"
-  data_dir: "/consul/data"
+  data_dir: "/opt/consul/data"
   encrypt: "{{ 'mysupersecretgossipencryptionkey'|b64encode }}"
   server: true
   bootstrap_expect: 1

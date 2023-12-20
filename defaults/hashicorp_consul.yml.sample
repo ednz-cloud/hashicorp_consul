@@ -9,6 +9,7 @@
 # hashi_consul_extra_files: false
 # hashi_consul_extra_files_src: /tmp/extra_files
 # hashi_consul_extra_files_dst: /etc/consul.d/extra_files
+# hashi_consul_extra_container_volumes: []
 # hashi_consul_envoy_install: false
 # hashi_consul_envoy_version: latest
 # #! consul configuration

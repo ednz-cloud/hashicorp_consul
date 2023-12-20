@@ -1,5 +1,9 @@
 ---
 # task/install_docker file for hashicorp_consul
+- name: "Update container volume list"
+  ansible.builtin.set_fact:
+    hashi_consul_container_volume_map: "{{ hashi_consul_container_volume_map + hashi_consul_extra_container_volumes }}"
+
 - name: "Include ednxzu.docker_systemd_service"
   ansible.builtin.include_role:
     name: ednxzu.docker_systemd_service

@@ -8,3 +8,11 @@
         name: ednxzu.install_docker
       vars:
         install_docker_python_packages: true
+
+    - name: "Create directory /opt/consul/tls"
+      ansible.builtin.file:
+        path: "/opt/consul/tls"
+        state: directory
+        owner: "100"
+        group: "1000"
+        mode: '0755'
