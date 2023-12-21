@@ -13,14 +13,6 @@ Role Variables
 --------------
 Available variables are listed below, along with default values. A sample file for the default values is available in `default/hashicorp_consul.yml.sample` in case you need it for any `group_vars` or `host_vars` configuration.
 
-```yaml
-hashi_consul_install: true # by default, set to true
-```
-This variable defines if the consul package is to be installed or not before configuring. If you install consul using another task, you can set this to `false`.
-
-```yaml
-hashi_consul_auto_update: false # by default, set to false
-```
 This variable allows you to choose to automatically update consul if a newer version is available.
 This variable is only relevant if using the `latest` version with the `host` deploy mode. In a `docker` deployment, the version is always kept up-to-date with the docker tag you chose (always the latest version of `latest` or `1.X` if you put this tag).
 Updating consul is usually pretty safe if done on a regular basis, but for better control over the upgrade process, see `hashi_consul_version`.
@@ -37,19 +29,21 @@ This variable specifies the version of consul to install when `hashi_consul_inst
  - If `hashi_consul_deploy_method: host`, the version of the package on the hashicorp repository (`1.14.1-1` for example). This can be found by running `apt-cache madison consul` on a machine with the repository installed.
  - If `hashi_consul_deploy_method: docker`, the tag of the container on the [hashicorp registry](https://hub.docker.com/r/hashicorp/consul)
 
+If the version is set to `latest`, the role will update the package/docker image on every run if a newer version is available. This will cause a restart cycle of your node/cluster, to update every agent to the latest version. Updating consul is usually pretty safe if done on a regular basis, but for better control over the upgrade process, please set the variable to a static release version.
+
 ```yaml
 hashi_consul_deploy_method: host # by default, set to host
 ```
-This variable defines the method of deployment of consul. The `host` method installs the binary directly on the host, and runs consul as a systemd service. The `docker` method install consul as a docker container.
+This variable defines the method of deployment of consul. The `host` method installs the binary directly on the host, and runs consul as a systemd service. The `docker` method install consul as a docker container, and maps volumes to it to persist configuration and data across restarts.
 
 ```yaml
 hashi_consul_env_variables: # by default, set to {}
-  env_var: value
+  ENV_VAR: value
 ```
-This value is a list of key/value that will populate the `consul.env` file. You do not have to capitalize the KEYS, as it will be done automatically.
+This value is a list of key/value that will populate the `consul.env`(for host deployment method) or `/etc/default/consul`(for docker deploy method) file.
 
 ```yaml
-hashi_consul_data_dir: "/opt/consul" # by default, set to /opt/consul
+hashi_consul_data_dir: "/opt/consul/data" # by default, set to /opt/consul
 ```
 This value defines the path where consul data will be stored on the node. Defaults to `/opt/consul`.
 
@@ -93,7 +87,6 @@ Dependencies
 ------------
 
 `ednxzu.manage_repositories` to configure the hashicorp apt repository.
-`ednxzu.manage_apt_packages` to install consul.
 `ednxzu.docker_systemd_service` if installing consul in a container.
 
 Example Playbook
