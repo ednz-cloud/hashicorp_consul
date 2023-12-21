@@ -46,21 +46,21 @@
               - stat_etc_consul_d_consul_json.stat.mode == '0600'
               - slurp_etc_consul_d_consul_json.content != ''
 
-    - name: "Test: directory /opt/consul"
+    - name: "Test: directory /opt/consul/data"
       block:
-        - name: "Stat directory /opt/consul"
+        - name: "Stat directory /opt/consul/data"
           ansible.builtin.stat:
-            path: "/opt/consul"
-          register: stat_opt_consul
+            path: "/opt/consul/data"
+          register: stat_opt_consul_data
 
-        - name: "Verify directory /opt/consul"
+        - name: "Verify directory /opt/consul/data"
           ansible.builtin.assert:
             that:
-              - stat_opt_consul.stat.exists
-              - stat_opt_consul.stat.isdir
-              - (stat_opt_consul.stat.uid | int) == 100
-              - (stat_opt_consul.stat.gid | int) == 1000
-              - stat_opt_consul.stat.mode == '0755'
+              - stat_opt_consul_data.stat.exists
+              - stat_opt_consul_data.stat.isdir
+              - (stat_opt_consul_data.stat.uid | int) == 100
+              - (stat_opt_consul_data.stat.gid | int) == 1000
+              - stat_opt_consul_data.stat.mode == '0755'
 
     - name: "Test: service consul"
       block:
@@ -94,7 +94,7 @@
               --env-file /etc/default/consul \
               --network "host" \
               --volume "/etc/consul.d:/consul/config" \
-              --volume "/opt/consul:/consul/data" \
+              --volume "/opt/consul/data:/opt/consul/data" \
               hashicorp/consul:latest
               ExecStop=/usr/bin/docker stop consul
               SyslogIdentifier=consul

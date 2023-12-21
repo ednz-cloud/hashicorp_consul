@@ -17,3 +17,6 @@
 - name: "Import install_docker.yml"
   ansible.builtin.include_tasks: "install_docker.yml"
   when: hashi_consul_deploy_method == 'docker'
+
+- name: "Flush handlers"
+  ansible.builtin.meta: flush_handlers

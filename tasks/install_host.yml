@@ -8,11 +8,30 @@
     manage_repositories_enable_custom_repo: true
     manage_repositories_custom_repo: "{{ hashi_consul_repository }}"
 
-- name: "Install consul:{{ hashi_consul_version }}"
-  ansible.builtin.include_role:
-    name: ednxzu.manage_apt_packages
-  vars:
-    manage_apt_packages_list: "{{ hashi_consul_packages }}"
+- name: "Get service consul"
+  ansible.builtin.service_facts:
+
+- name: "Install from repostories"
+  throttle: 1
+  block:
+    - name: "Install consul version: {{ hashi_consul_version }}"
+      ansible.builtin.apt:
+        update_cache: yes
+        name: "consul{{ '='~hashi_consul_version if hashi_consul_version != 'latest' }}"
+        state: "{{ 'present' if hashi_consul_version != 'latest' else hashi_consul_version}}"
+        allow_downgrade: true
+        cache_valid_time: 3600
+
+    - name: "Ensure consul is running"
+      ansible.builtin.service:
+        name: "{{ hashi_consul_service_name }}"
+        state: started
+      register: _consul_service_health
+      until: _consul_service_health.status.ActiveState == "active"
+      retries: 15
+      delay: 2
+      when: ansible_facts.services[hashi_consul_service_name~'.service'] is defined
+        and ansible_facts.services[hashi_consul_service_name~'.service']['state'] == 'running'
 
 - name: "Copy systemd service file for consul"
   ansible.builtin.template:
