@@ -86,8 +86,8 @@ This variable sets all of the configuration parameters for consul. For more info
 Dependencies
 ------------
 
-`ednxzu.manage_repositories` to configure the hashicorp apt repository.
-`ednxzu.docker_systemd_service` if installing consul in a container.
+`ednz_cloud.manage_repositories` to configure the hashicorp apt repository.
+`ednz_cloud.docker_systemd_service` if installing consul in a container.
 
 Example Playbook
 ----------------
@@ -96,7 +96,7 @@ Example Playbook
 # calling the role inside a playbook with either the default or group_vars/host_vars
 - hosts: servers
   roles:
-    - ednxzu.hashicorp_consul
+    - ednz_cloud.hashicorp_consul
 ```
 
 License
