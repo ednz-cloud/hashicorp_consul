@@ -11,6 +11,8 @@
     docker_systemd_service_container_name: "consul"
     docker_systemd_service_image: "{{ hashi_consul_docker_image }}:{{ hashi_consul_version }}"
     docker_systemd_service_container_env: "{{ hashi_consul_env_variables }}"
+    docker_systemd_service_container_cmd:
+      - agent
     docker_systemd_service_flags:
       - network: host
       - volume: "{{ hashi_consul_container_volume_map }}"

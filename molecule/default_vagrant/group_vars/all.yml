@@ -1,5 +1,5 @@
 ---
-hashi_consul_deploy_method: docker  # deployment method, either host or docker.
+hashi_consul_deploy_method: docker # deployment method, either host or docker.
 hashi_consul_configuration:
   domain: consul
   datacenter: dc1

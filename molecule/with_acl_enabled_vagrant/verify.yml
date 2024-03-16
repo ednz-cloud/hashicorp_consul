@@ -98,7 +98,7 @@
               --volume "/usr/local/bin/envoy:/usr/local/bin/envoy" \
               --volume "/etc/consul.d/extra_files:/etc/consul.d/extra_files" \
               --volume "/opt/consul/tls:/opt/consul/tls" \
-              hashicorp/consul:1.17.1-ubi
+              hashicorp/consul:1.17.1-ubi agent
               ExecStop=/usr/bin/docker stop consul
               SyslogIdentifier=consul
               Restart=always

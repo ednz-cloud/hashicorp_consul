@@ -95,7 +95,7 @@
               --network "host" \
               --volume "/etc/consul.d:/consul/config" \
               --volume "/opt/consul/data:/opt/consul/data" \
-              hashicorp/consul:latest
+              hashicorp/consul:latest agent
               ExecStop=/usr/bin/docker stop consul
               SyslogIdentifier=consul
               Restart=always
