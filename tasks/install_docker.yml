@@ -13,7 +13,9 @@
     docker_systemd_service_container_env: "{{ hashi_consul_env_variables }}"
     docker_systemd_service_container_cmd:
       - agent
+      - -config-dir={{ hashi_consul_config_dir }}
     docker_systemd_service_flags:
+      - entrypoint: /bin/consul
       - network: host
       - volume: "{{ hashi_consul_container_volume_map }}"
     docker_systemd_service_name: "{{ docker_systemd_service_container_name }}_container"

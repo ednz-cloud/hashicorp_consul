@@ -92,10 +92,11 @@
               ExecStart=/usr/bin/docker run --name consul \
               --rm \
               --env-file /etc/default/consul \
+              --entrypoint "/bin/consul" \
               --network "host" \
-              --volume "/etc/consul.d:/consul/config" \
+              --volume "/etc/consul.d:/etc/consul.d" \
               --volume "/opt/consul/data:/opt/consul/data" \
-              hashicorp/consul:latest agent
+              hashicorp/consul:latest agent -config-dir=/etc/consul.d
               ExecStop=/usr/bin/docker stop consul
               SyslogIdentifier=consul
               Restart=always
