@@ -94,7 +94,7 @@
               --env-file /etc/default/consul \
               --entrypoint "/bin/consul" \
               --network "host" \
-              --volume "/etc/consul.d:/consul/config" \
+              --volume "/etc/consul.d:/etc/consul.d" \
               --volume "/opt/consul/data:/opt/consul/data" \
               --volume "/usr/local/bin/envoy:/usr/local/bin/envoy" \
               --volume "/etc/consul.d/extra_files:/etc/consul.d/extra_files" \
