@@ -11,7 +11,7 @@ None.
 
 Role Variables
 --------------
-Available variables are listed below, along with default values. A sample file for the default values is available in `default/hashicorp_consul.yml.sample` in case you need it for any `group_vars` or `host_vars` configuration.
+Available variables are listed below, along with default values.
 
 This variable allows you to choose to automatically update consul if a newer version is available.
 This variable is only relevant if using the `latest` version with the `host` deploy mode. In a `docker` deployment, the version is always kept up-to-date with the docker tag you chose (always the latest version of `latest` or `1.X` if you put this tag).
