@@ -14,7 +14,7 @@
         dest: "{{ hashi_consul_config_dir }}/consul.env"
         owner: "{{ hashi_consul_user }}"
         group: "{{ hashi_consul_group }}"
-        mode: '0600'
+        mode: "0600"
 
 - name: "Copy consul.json template"
   ansible.builtin.template:
@@ -22,7 +22,7 @@
     dest: "{{ hashi_consul_config_dir }}/consul.json"
     owner: "{{ hashi_consul_user }}"
     group: "{{ hashi_consul_group }}"
-    mode: '0600'
+    mode: "0600"
   notify:
     - "systemctl-enable-consul"
     - "systemctl-restart-consul"
@@ -33,25 +33,54 @@
     - name: "Update container volume list"
       ansible.builtin.set_fact:
         hashi_consul_container_volume_map: "{{
-          hashi_consul_container_volume_map + [
-          hashi_consul_extra_files_dst + ':' + hashi_consul_extra_files_dst
-          ]
-          }}"
+          (hashi_consul_container_volume_map + [
+          item.dest + ':' + item.dest
+          ]) | unique }}"
+      loop: "{{ hashi_consul_extra_files_list }}"
+      loop_control:
+        loop_var: item
+      delegate_to: localhost
 
-    - name: "Create directory {{ hashi_consul_extra_files_dst }}"
-      ansible.builtin.file:
-        path: "{{ hashi_consul_extra_files_dst }}"
-        state: directory
-        owner: "{{ hashi_consul_user }}"
-        group: "{{ hashi_consul_group }}"
-        mode: '0755'
+    - name: "Get extra file types"
+      ansible.builtin.stat:
+        path: "{{ item.src }}"
+      loop: "{{ hashi_consul_extra_files_list }}"
+      register: hashi_consul_extra_file_stat
+      delegate_to: localhost
 
-    - name: "Copy extra configuration files"
+    - name: "Set list for file sources"
+      vars:
+        _hashi_consul_file_sources: []
+      ansible.builtin.set_fact:
+        _hashi_consul_file_sources: "{{ _hashi_consul_file_sources + [item.item] }}"
+      when: item.stat.isreg
+      loop: "{{ hashi_consul_extra_file_stat.results }}"
+      loop_control:
+        loop_var: item
+      delegate_to: localhost
+
+    - name: "Set list for directory sources"
+      vars:
+        _hashi_consul_dir_sources: []
+      ansible.builtin.set_fact:
+        _hashi_consul_dir_sources: "{{ _hashi_consul_dir_sources + [item.item] }}"
+      when: item.stat.isdir
+      loop: "{{ hashi_consul_extra_file_stat.results }}"
+      loop_control:
+        loop_var: item
+      delegate_to: localhost
+
+    - name: "Template extra file sources"
       ansible.builtin.template:
-        src: "{{ item }}"
-        dest: "{{ hashi_consul_extra_files_dst }}/{{ (item | basename).split('.')[:-1] | join('.')}}"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest | regex_replace('\\.j2$', '') }}"
         owner: "{{ hashi_consul_user }}"
         group: "{{ hashi_consul_group }}"
-        mode: '0600'
-      with_fileglob:
-        - "{{ hashi_consul_extra_files_src }}/*"
+        mode: "0700"
+      loop: "{{ _hashi_consul_file_sources }}"
+
+    - name: "Template extra directory sources"
+      ansible.builtin.include_tasks: recursive_copy_extra_dirs.yml
+      loop: "{{ _hashi_consul_dir_sources }}"
+      loop_control:
+        loop_var: dir_source_item
