@@ -78,9 +78,11 @@
         group: "{{ hashi_consul_group }}"
         mode: "0700"
       loop: "{{ _hashi_consul_file_sources }}"
+      when: _hashi_consul_file_sources is defined
 
     - name: "Template extra directory sources"
       ansible.builtin.include_tasks: recursive_copy_extra_dirs.yml
       loop: "{{ _hashi_consul_dir_sources }}"
       loop_control:
         loop_var: dir_source_item
+      when: _hashi_consul_dir_sources is defined
