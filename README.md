@@ -7,7 +7,7 @@ This role install and configure consul on **debian-based** distributions.
 Requirements
 ------------
 
-None.
+The `unzip` package needs to be installed on the target host(s) to be able to decompress the consul release bundle.
 
 Role Variables
 --------------
@@ -93,14 +93,6 @@ hashi_consul_extra_files_list: [] # by default, set to []
 ```
 all the files shown above will be copied over, and the directory structure inside `directory` will be preserved.
 
-> **Note**
-> In case you're using the `docker` deployment method, every destination path will be added automatically to the `hashi_consul_extra_container_volumes` variable, so you don't need to set them manually.
-
-```yaml
-hashi_consul_extra_container_volumes: [] # by default, set to []
-```
-This variable lets you defines more volumes to mount inside the container when using the `docker` deployment method. This is a list of string in the form: `"/path/on/host:/path/on/container"`. These volumes will not be created/checked before being mounted, so they need to exist prior to running this role.
-
 ```yaml
 hashi_consul_envoy_install: false # by default, set to false
 ```
@@ -120,8 +112,7 @@ This variable sets all of the configuration parameters for consul. For more info
 Dependencies
 ------------
 
-`ednz_cloud.manage_repositories` to configure the hashicorp apt repository.
-`ednz_cloud.docker_systemd_service` if installing consul in a container.
+None.
 
 Example Playbook
 ----------------
