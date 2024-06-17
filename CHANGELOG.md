@@ -1,3 +1,9 @@
+## v0.1.1 (2024-06-17)
+
+### Fix
+
+- rename all variables to conform to ansible-lint var-naming rule, remove outdated documentation bits
+
 ## v0.1.0 (2024-06-17)
 
 ### Feat
