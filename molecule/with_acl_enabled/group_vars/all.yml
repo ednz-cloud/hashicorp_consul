@@ -1,21 +1,21 @@
 ---
-hashi_consul_start_service: true
-hashi_consul_version: latest
-hashi_consul_env_variables: {}
-hashi_consul_data_dir: "/opt/consul/data"
-hashi_consul_extra_files: false
-hashi_consul_extra_files_list: []
-hashi_consul_envoy_install: true
-hashi_consul_envoy_version: v1.26.3
+hashicorp_consul_start_service: true
+hashicorp_consul_version: latest
+hashicorp_consul_env_variables: {}
+hashicorp_consul_data_dir: "/opt/consul/data"
+hashicorp_consul_extra_files: false
+hashicorp_consul_extra_files_list: []
+hashicorp_consul_envoy_install: true
+hashicorp_consul_envoy_version: v1.26.3
 #! consul configuration
-hashi_consul_configuration:
+hashicorp_consul_configuration:
   domain: consul
   datacenter: dc1
   primary_datacenter: dc1
   client_addr: "0.0.0.0"
   bind_addr: "{{ ansible_default_ipv4.address }}"
   advertise_addr: "{{ ansible_default_ipv4.address }}"
-  data_dir: "{{ hashi_consul_data_dir }}"
+  data_dir: "{{ hashicorp_consul_data_dir }}"
   encrypt: "{{ 'mysupersecretgossipencryptionkey'|b64encode }}"
   server: true
   bootstrap_expect: 1

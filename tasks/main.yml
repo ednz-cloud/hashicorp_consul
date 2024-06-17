@@ -2,15 +2,15 @@
 # task/main file for hashicorp_consul
 - name: "Set reload-check & restart-check variable"
   ansible.builtin.set_fact:
-    _hashi_consul_service_need_reload: false
-    _hashi_consul_service_need_restart: false
+    _hashicorp_consul_service_need_reload: false
+    _hashicorp_consul_service_need_restart: false
 
 - name: "Import prerequisites.yml"
   ansible.builtin.include_tasks: prerequisites.yml
 
 - name: "Import install_envoy.yml"
   ansible.builtin.include_tasks: install_envoy.yml
-  when: hashi_consul_envoy_install
+  when: hashicorp_consul_envoy_install
 
 - name: "Import install.yml"
   ansible.builtin.include_tasks: "install.yml"
@@ -18,19 +18,19 @@
 - name: "Import configure.yml"
   ansible.builtin.include_tasks: configure.yml
 
-- name: "Enable service: {{ hashi_consul_service_name }}"
+- name: "Enable service: {{ hashicorp_consul_service_name }}"
   ansible.builtin.service:
-    name: "{{ hashi_consul_service_name }}"
+    name: "{{ hashicorp_consul_service_name }}"
     enabled: true
 
 - name: "Reload systemd daemon"
   ansible.builtin.systemd:
     daemon_reload: true
-  when: _hashi_consul_service_need_reload
+  when: _hashicorp_consul_service_need_reload
 
-- name: "Start service: {{ hashi_consul_service_name }}"
+- name: "Start service: {{ hashicorp_consul_service_name }}"
   ansible.builtin.service:
-    name: "{{ hashi_consul_service_name }}"
+    name: "{{ hashicorp_consul_service_name }}"
     state: restarted
   throttle: 1
-  when: _hashi_consul_service_need_restart
+  when: _hashicorp_consul_service_need_restart
