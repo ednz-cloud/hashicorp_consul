@@ -1,80 +1,80 @@
 ---
 # task/install file for hashicorp_consul
 - name: "Get latest release of consul"
-  when: hashi_consul_version == 'latest'
+  when: hashicorp_consul_version == 'latest'
   block:
     - name: "Get latest consul release from github api"
       ansible.builtin.uri:
-        url: "{{ hashi_consul_github_api }}/{{ hashi_consul_github_project }}/releases/latest"
+        url: "{{ hashicorp_consul_github_api }}/{{ hashicorp_consul_github_project }}/releases/latest"
         return_content: true
-      register: _hashi_consul_latest_release
+      register: _hashicorp_consul_latest_release
 
     - name: "Set wanted consul version to latest tag"
       ansible.builtin.set_fact:
-        _hashi_consul_wanted_version: "{{ _hashi_consul_latest_release.json['tag_name']|regex_replace('v', '') }}"
+        _hashicorp_consul_wanted_version: "{{ _hashicorp_consul_latest_release.json['tag_name']|regex_replace('v', '') }}"
 
-- name: "Set wanted consul version to {{ hashi_consul_version }}"
+- name: "Set wanted consul version to {{ hashicorp_consul_version }}"
   ansible.builtin.set_fact:
-    _hashi_consul_wanted_version: "{{ hashi_consul_version|regex_replace('v', '') }}"
-  when: hashi_consul_version != 'latest'
+    _hashicorp_consul_wanted_version: "{{ hashicorp_consul_version|regex_replace('v', '') }}"
+  when: hashicorp_consul_version != 'latest'
 
 - name: "Get current consul version"
   block:
     - name: "Stat consul version file"
       ansible.builtin.stat:
-        path: "{{ hashi_consul_config_dir }}/.version"
+        path: "{{ hashicorp_consul_config_dir }}/.version"
       changed_when: false
       check_mode: false
-      register: _hashi_consul_version_file
+      register: _hashicorp_consul_version_file
 
     - name: "Get current consul version"
       ansible.builtin.slurp:
-        src: "{{ _hashi_consul_version_file.stat.path }}"
+        src: "{{ _hashicorp_consul_version_file.stat.path }}"
       when:
-        - _hashi_consul_version_file.stat.exists
-        - _hashi_consul_version_file.stat.isreg
-      register: _hashi_consul_current_version
+        - _hashicorp_consul_version_file.stat.exists
+        - _hashicorp_consul_version_file.stat.isreg
+      register: _hashicorp_consul_current_version
 
 - name: "Download and install consul binary"
-  when: _hashi_consul_current_version is not defined
-    or _hashi_consul_wanted_version != (_hashi_consul_current_version.content|default('')|b64decode)
+  when: _hashicorp_consul_current_version is not defined
+    or _hashicorp_consul_wanted_version != (_hashicorp_consul_current_version.content|default('')|b64decode)
   block:
     - name: "Set consul package name to download"
       ansible.builtin.set_fact:
-        _hashi_consul_package_name: >-
-          consul_{{ _hashi_consul_wanted_version }}_linux_{{ hashi_consul_deb_architecture_map[ansible_architecture] }}.zip
-        _hashi_consul_shasum_file_name: >-
-          consul_{{ _hashi_consul_wanted_version }}_SHA256SUMS
+        _hashicorp_consul_package_name: >-
+          consul_{{ _hashicorp_consul_wanted_version }}_linux_{{ hashicorp_consul_deb_architecture_map[ansible_architecture] }}.zip
+        _hashicorp_consul_shasum_file_name: >-
+          consul_{{ _hashicorp_consul_wanted_version }}_SHA256SUMS
 
     - name: "Download checksum file for consul archive"
       ansible.builtin.get_url:
-        url: "{{ hashi_consul_repository_url }}/{{ _hashi_consul_wanted_version }}/{{ _hashi_consul_shasum_file_name }}"
-        dest: "/tmp/{{ _hashi_consul_shasum_file_name }}"
+        url: "{{ hashicorp_consul_repository_url }}/{{ _hashicorp_consul_wanted_version }}/{{ _hashicorp_consul_shasum_file_name }}"
+        dest: "/tmp/{{ _hashicorp_consul_shasum_file_name }}"
         mode: "0644"
-      register: _hashi_consul_checksum_file
-      until: _hashi_consul_checksum_file is succeeded
+      register: _hashicorp_consul_checksum_file
+      until: _hashicorp_consul_checksum_file is succeeded
       retries: 5
       delay: 2
       check_mode: false
 
     - name: "Extract correct checksum from checksum file"
       ansible.builtin.command:
-        cmd: 'grep "{{ _hashi_consul_package_name }}" /tmp/{{ _hashi_consul_shasum_file_name }}'
+        cmd: 'grep "{{ _hashicorp_consul_package_name }}" /tmp/{{ _hashicorp_consul_shasum_file_name }}'
       changed_when: false
-      register: _hashi_consul_expected_checksum_line
+      register: _hashicorp_consul_expected_checksum_line
 
     - name: "Parse the expected checksum"
       ansible.builtin.set_fact:
-        _hashi_consul_expected_checksum: "{{ _hashi_consul_expected_checksum_line.stdout.split()[0] }}"
+        _hashicorp_consul_expected_checksum: "{{ _hashicorp_consul_expected_checksum_line.stdout.split()[0] }}"
 
     - name: "Download consul binary archive"
       ansible.builtin.get_url:
-        url: "{{ hashi_consul_repository_url }}/{{ _hashi_consul_wanted_version }}/{{ _hashi_consul_package_name }}"
-        dest: "/tmp/{{ _hashi_consul_package_name }}"
+        url: "{{ hashicorp_consul_repository_url }}/{{ _hashicorp_consul_wanted_version }}/{{ _hashicorp_consul_package_name }}"
+        dest: "/tmp/{{ _hashicorp_consul_package_name }}"
         mode: "0644"
-        checksum: "sha256:{{ _hashi_consul_expected_checksum }}"
-      register: _hashi_consul_binary_archive
-      until: _hashi_consul_binary_archive is succeeded
+        checksum: "sha256:{{ _hashicorp_consul_expected_checksum }}"
+      register: _hashicorp_consul_binary_archive
+      until: _hashicorp_consul_binary_archive is succeeded
       retries: 5
       delay: 2
       check_mode: false
@@ -87,17 +87,17 @@
 
     - name: "Unpack consul archive"
       ansible.builtin.unarchive:
-        src: "/tmp/{{ _hashi_consul_package_name }}"
+        src: "/tmp/{{ _hashicorp_consul_package_name }}"
         dest: "/tmp/consul"
-        owner: "{{ hashi_consul_user }}"
-        group: "{{ hashi_consul_group }}"
+        owner: "{{ hashicorp_consul_user }}"
+        group: "{{ hashicorp_consul_group }}"
         mode: "0755"
         remote_src: true
 
-    - name: "Copy consul binary to {{ hashi_consul_binary_path }}"
+    - name: "Copy consul binary to {{ hashicorp_consul_binary_path }}"
       ansible.builtin.copy:
         src: /tmp/consul/consul
-        dest: "{{ hashi_consul_binary_path }}"
+        dest: "{{ hashicorp_consul_binary_path }}"
         owner: root
         group: root
         mode: "0755"
@@ -106,15 +106,15 @@
 
     - name: "Update consul version file"
       ansible.builtin.copy:
-        content: "{{ _hashi_consul_wanted_version }}"
-        dest: "{{ hashi_consul_config_dir }}/.version"
-        owner: "{{ hashi_consul_user }}"
-        group: "{{ hashi_consul_group }}"
+        content: "{{ _hashicorp_consul_wanted_version }}"
+        dest: "{{ hashicorp_consul_config_dir }}/.version"
+        owner: "{{ hashicorp_consul_user }}"
+        group: "{{ hashicorp_consul_group }}"
         mode: "0600"
 
     - name: "Set restart-check variable"
       ansible.builtin.set_fact:
-        _hashi_consul_service_need_restart: true
+        _hashicorp_consul_service_need_restart: true
 
     - name: "Cleanup temporary directory"
       ansible.builtin.file:
@@ -122,8 +122,8 @@
         state: absent
       loop:
         - /tmp/consul
-        - /tmp/{{ _hashi_consul_package_name }}
-        - /tmp/{{ _hashi_consul_shasum_file_name }}
+        - /tmp/{{ _hashicorp_consul_package_name }}
+        - /tmp/{{ _hashicorp_consul_shasum_file_name }}
 
 - name: "Copy systemd service file for consul"
   ansible.builtin.template:
@@ -132,10 +132,10 @@
     owner: root
     group: root
     mode: "0644"
-  register: _hashi_consul_unit_file
+  register: _hashicorp_consul_unit_file
 
 - name: "Set reload-check & restart-check variable"
   ansible.builtin.set_fact:
-    _hashi_consul_service_need_reload: true
-    _hashi_consul_service_need_restart: true
-  when: _hashi_consul_unit_file.changed # noqa: no-handler
+    _hashicorp_consul_service_need_reload: true
+    _hashicorp_consul_service_need_restart: true
+  when: _hashicorp_consul_unit_file.changed # noqa: no-handler
