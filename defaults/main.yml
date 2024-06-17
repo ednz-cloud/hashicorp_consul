@@ -2,12 +2,10 @@
 # defaults file for hashicorp_consul
 hashi_consul_start_service: true
 hashi_consul_version: latest
-hashi_consul_deploy_method: host # deployment method, either host or docker.
 hashi_consul_env_variables: {}
 hashi_consul_data_dir: "/opt/consul/data"
 hashi_consul_extra_files: false
 hashi_consul_extra_files_list: []
-hashi_consul_extra_container_volumes: []
 hashi_consul_envoy_install: false
 hashi_consul_envoy_version: latest
 #! consul configuration

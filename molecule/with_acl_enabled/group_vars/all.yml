@@ -1,8 +1,6 @@
 ---
-hashi_consul_auto_update: true
 hashi_consul_start_service: true
 hashi_consul_version: latest
-hashi_consul_deploy_method: host # deployment method, either host or docker.
 hashi_consul_env_variables: {}
 hashi_consul_data_dir: "/opt/consul/data"
 hashi_consul_extra_files: false

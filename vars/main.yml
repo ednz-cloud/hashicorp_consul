@@ -1,29 +1,29 @@
 ---
 # vars file for hashicorp_consul
-hashi_consul_user: "{{ '100' if hashi_consul_deploy_method == 'docker' else 'consul' }}"
-hashi_consul_group: "{{ '1000' if hashi_consul_deploy_method == 'docker' else 'consul' }}"
+hashi_consul_user: consul
+hashi_consul_group: consul
+
 hashi_consul_config_dir: "/etc/consul.d"
-hashi_consul_service_name: "consul{{ '_container' if hashi_consul_deploy_method == 'docker' }}"
-hashi_consul_docker_image: hashicorp/consul
-hashi_consul_envoy_github_api: https://api.github.com/repos/envoyproxy/envoy
-hashi_consul_envoy_github_url: https://github.com/envoyproxy/envoy
-hashi_consul_envoy_path: "/usr/local/bin/envoy"
-hashi_consul_envoy_arch_map:
+hashi_consul_binary_path: /usr/local/bin/consul
+hashi_consul_envoy_binary_path: /usr/local/bin/envoy
+
+hashi_consul_deb_architecture_map:
+  x86_64: "amd64"
+  aarch64: "arm64"
+  armv7l: "arm"
+  armv6l: "arm"
+
+hashi_consul_envoy_architecture_map:
   x86_64: "x86_64"
   aarch64: "aarch64"
-hashi_consul_container_volume_map:
-  - "{{ hashi_consul_config_dir }}:{{ hashi_consul_config_dir }}"
-  - "{{ hashi_consul_data_dir }}:{{ hashi_consul_data_dir }}"
-hashi_consul_envoy_arch: "{{ hashi_consul_envoy_arch_map[ansible_architecture] | default(ansible_architecture) }}"
-hashi_consul_repository:
-  - name: hashicorp
-    uri: "https://apt.releases.hashicorp.com"
-    comments: "hashicorp repository"
-    types:
-      - deb
-    suites:
-      - "{{ ansible_distribution_release }}"
-    components:
-      - main
-    options:
-      Signed-By: "https://apt.releases.hashicorp.com/gpg"
+
+hashi_consul_architecture: "{{ hashi_consul_deb_architecture_map[ansible_architecture] | default(ansible_architecture) }}"
+hashi_consul_envoy_architecture: "{{ hashi_consul_envoy_architecture_map[ansible_architecture] | default(ansible_architecture) }}"
+
+hashi_consul_service_name: "consul"
+
+hashi_consul_github_api: https://api.github.com/repos
+hashi_consul_envoy_github_project: envoyproxy/envoy
+hashi_consul_github_project: hashicorp/consul
+hashi_consul_github_url: https://github.com
+hashi_consul_repository_url: https://releases.hashicorp.com/consul

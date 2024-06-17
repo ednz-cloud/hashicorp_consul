@@ -28,6 +28,22 @@
               - "'/bin/false' in consul_user.ansible_facts.getent_passwd['consul']"
               - "'consul' in consul_group.ansible_facts.getent_group.keys()"
 
+    - name: "Test: binary /usr/local/bin/consul"
+      block:
+        - name: "Stat binary /usr/local/bin/consul"
+          ansible.builtin.stat:
+            path: "/usr/local/bin/consul"
+          register: stat_usr_local_bin_consul
+
+        - name: "Verify binary /usr/local/bin/consul"
+          ansible.builtin.assert:
+            that:
+              - stat_usr_local_bin_consul.stat.exists
+              - stat_usr_local_bin_consul.stat.isreg
+              - stat_usr_local_bin_consul.stat.pw_name == 'root'
+              - stat_usr_local_bin_consul.stat.gr_name == 'root'
+              - stat_usr_local_bin_consul.stat.mode == '0755'
+
     - name: "Test: directory /etc/consul.d"
       block:
         - name: "Stat directory /etc/consul.d"

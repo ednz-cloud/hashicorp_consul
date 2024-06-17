@@ -1,5 +1,10 @@
 ---
 # task/main file for hashicorp_consul
+- name: "Set reload-check & restart-check variable"
+  ansible.builtin.set_fact:
+    _hashi_consul_service_need_reload: false
+    _hashi_consul_service_need_restart: false
+
 - name: "Import prerequisites.yml"
   ansible.builtin.include_tasks: prerequisites.yml
 
@@ -7,16 +12,25 @@
   ansible.builtin.include_tasks: install_envoy.yml
   when: hashi_consul_envoy_install
 
-- name: "Import install_host.yml"
-  ansible.builtin.include_tasks: "install_host.yml"
-  when: hashi_consul_deploy_method == 'host'
+- name: "Import install.yml"
+  ansible.builtin.include_tasks: "install.yml"
 
 - name: "Import configure.yml"
   ansible.builtin.include_tasks: configure.yml
 
-- name: "Import install_docker.yml"
-  ansible.builtin.include_tasks: "install_docker.yml"
-  when: hashi_consul_deploy_method == 'docker'
+- name: "Enable service: {{ hashi_consul_service_name }}"
+  ansible.builtin.service:
+    name: "{{ hashi_consul_service_name }}"
+    enabled: true
 
-- name: "Flush handlers"
-  ansible.builtin.meta: flush_handlers
+- name: "Reload systemd daemon"
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: _hashi_consul_service_need_reload
+
+- name: "Start service: {{ hashi_consul_service_name }}"
+  ansible.builtin.service:
+    name: "{{ hashi_consul_service_name }}"
+    state: restarted
+  throttle: 1
+  when: _hashi_consul_service_need_restart

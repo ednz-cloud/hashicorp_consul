@@ -1,11 +1,43 @@
 ---
-name: test
-on: [push]
+name: pull-requests-open
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+    branches:
+      - main
 
 jobs:
+  commit-history-check:
+    name: Check commit compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Install commitizen
+        run: pip3 install commitizen
+        shell: bash
+        working-directory: ./
+
+      - run: git log origin/${{ github.event.pull_request.base.ref }}..
+
+      - name: Verify commit message compliance
+        run: |
+          echo "cz check --rev-range origin/${{ gitea.event.pull_request.base.ref }}.."
+          cz check --rev-range origin/${{ gitea.event.pull_request.base.ref }}..
+        shell: bash
+        working-directory: ./
+
   lint:
     name: Linting
     runs-on: ubuntu-latest
+    needs: commit-history-check
     container:
       image: git.ednz.fr/container-factory/ansible-runner:act-latest
       credentials:
@@ -34,11 +66,11 @@ jobs:
         password: ${{ secrets.ACTIONS_TOKEN }}
     strategy:
       matrix:
-        test_os: [debian11, debian12, ubuntu2004, ubuntu2204]
+        test_os: [debian11, debian12, ubuntu2004, ubuntu2204, ubuntu2404]
         scenario: [default, with_acl_enabled]
     env:
-      ANSIBLE_HOST_KEY_CHECKING: 'false'
-      ANSIBLE_FORCE_COLOR: 'true'
+      ANSIBLE_HOST_KEY_CHECKING: "false"
+      ANSIBLE_FORCE_COLOR: "true"
       ANSIBLE_PYTHON_INTERPRETER: /usr/bin/python3
     steps:
       - name: Checkout
