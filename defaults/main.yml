@@ -3,7 +3,7 @@
 hashicorp_consul_start_service: true
 hashicorp_consul_version: latest
 hashicorp_consul_env_variables: {}
-hashicorp_consul_data_dir: "/opt/consul/data"
+hashicorp_consul_data_dir: "/opt/consul"
 hashicorp_consul_extra_files: false
 hashicorp_consul_extra_files_list: []
 hashicorp_consul_envoy_install: false

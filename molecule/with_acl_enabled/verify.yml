@@ -86,21 +86,21 @@
               - stat_etc_consul_d_consul_json.stat.mode == '0600'
               - slurp_etc_consul_d_consul_json.content != ''
 
-    - name: "Test: directory /opt/consul/data"
+    - name: "Test: directory /opt/consul"
       block:
-        - name: "Stat directory /opt/consul/data"
+        - name: "Stat directory /opt/consul"
           ansible.builtin.stat:
-            path: "/opt/consul/data"
-          register: stat_opt_consul_data
+            path: "/opt/consul"
+          register: stat_opt_consul
 
-        - name: "Verify directory /opt/consul/data"
+        - name: "Verify directory /opt/consul"
           ansible.builtin.assert:
             that:
-              - stat_opt_consul_data.stat.exists
-              - stat_opt_consul_data.stat.isdir
-              - stat_opt_consul_data.stat.pw_name == 'consul'
-              - stat_opt_consul_data.stat.gr_name == 'consul'
-              - stat_opt_consul_data.stat.mode == '0755'
+              - stat_opt_consul.stat.exists
+              - stat_opt_consul.stat.isdir
+              - stat_opt_consul.stat.pw_name == 'consul'
+              - stat_opt_consul.stat.gr_name == 'consul'
+              - stat_opt_consul.stat.mode == '0755'
 
     - name: "Test: service consul"
       block:

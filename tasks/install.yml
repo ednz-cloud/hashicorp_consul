@@ -128,7 +128,7 @@
 - name: "Copy systemd service file for consul"
   ansible.builtin.template:
     src: "consul.service.j2"
-    dest: "/etc/systemd/system/consul.service"
+    dest: "/etc/systemd/system/{{ hashicorp_consul_service_name }}.service"
     owner: root
     group: root
     mode: "0644"
