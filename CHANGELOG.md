@@ -1,3 +1,13 @@
+## v0.2.0 (2024-06-19)
+
+### Feat
+
+- add ubuntu 24.04 to support list
+
+### Fix
+
+- remove deprecated code
+
 ## v0.1.1 (2024-06-17)
 
 ### Fix
