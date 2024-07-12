@@ -1,3 +1,9 @@
+## v0.2.1 (2024-07-12)
+
+### Fix
+
+- check if consul service is not in a failed state to trigger restart if needed
+
 ## v0.2.0 (2024-06-19)
 
 ### Feat
