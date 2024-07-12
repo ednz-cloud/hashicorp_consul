@@ -18,6 +18,14 @@
 - name: "Import configure.yml"
   ansible.builtin.include_tasks: configure.yml
 
+- name: "Populate service facts"
+  ansible.builtin.service_facts:
+
+- name: "Set restart-check variable"
+  ansible.builtin.set_fact:
+    _hashicorp_consul_service_need_restart: true
+  when: ansible_facts.services[hashicorp_consul_service_name~'.service'].state != 'running'
+
 - name: "Enable service: {{ hashicorp_consul_service_name }}"
   ansible.builtin.service:
     name: "{{ hashicorp_consul_service_name }}"
