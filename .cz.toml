@@ -3,4 +3,3 @@ name = "cz_conventional_commits"
 version_provider = "scm"
 tag_format = "v$version"
 update_changelog_on_bump = true
-major_version_zero = true

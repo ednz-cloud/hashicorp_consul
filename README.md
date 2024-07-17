@@ -1,119 +1,231 @@
-hashicorp_consul
-=========
+# hashicorp_consul
+
 ![Ansible Badge](https://img.shields.io/badge/Ansible-E00?logo=ansible&logoColor=fff&style=for-the-badge)
 ![HashiCorp Badge](https://img.shields.io/badge/HashiCorp-000?logo=hashicorp&logoColor=fff&style=for-the-badge)
 ![Consul Badge](https://img.shields.io/badge/Consul-F24C53?logo=consul&logoColor=fff&style=for-the-badge)
 
 > This repository is only a mirror. Development and testing is done on a private gitea server.
+<!-- DOCSIBLE START -->
 
-This role install and configure consul on **debian-based** distributions.
+# 📃 Role overview
 
-Requirements
-------------
+## hashicorp_consul
 
-The `unzip` package needs to be installed on the target host(s) to be able to decompress the consul release bundle.
 
-Role Variables
---------------
-Available variables are listed below, along with default values.
 
-```yaml
-hashicorp_consul_start_service: true
-```
-This variable defines if the consul service should be started once it has been configured. This is usefull in case you're using this role to build golden images, in which case you might want to only enable the service, to have it start on the next boot (when the image is launched)
+Description: Install and configure hashicorp consul for debian-based distros.
 
-```yaml
-hashicorp_consul_version: latest # by default, set to latest
-```
-This variable specifies the version of consul to install. The version to specify is either `latest` (NOT RECOMMENDED), or any tag present on the [GitHub Repository](https://github.com/hashicorp/consul/releases) (without the leading `v`). Loose tags are **not supported** (1.7, 1, etc..).
 
-```yaml
-hashicorp_consul_env_variables: # by default, set to {}
-  ENV_VAR: value
-```
-This value is a list of key/value that will populate the `consul.env` file.
+| Field                | Value           |
+|--------------------- |-----------------|
+| Readme update        | 17/07/2024 |
 
-```yaml
-hashicorp_consul_data_dir: "/opt/consul" # by default, set to /opt/consul
-```
-This value defines the path where consul data will be stored on the node. Defaults to `/opt/consul`.
+### Defaults
 
-```yaml
-hashicorp_consul_extra_files: false # by default, set to false
-```
-This variable defines whether or not there is extra configuration files to copy to the target.
+**These are static variables with lower priority**
 
-```yaml
-hashicorp_consul_extra_files_list: [] # by default, set to []
-  # - src: /tmp/directory
-  #   dest: /etc/consul.d/directory
-  # - src: /tmp/file.conf
-  #   dest: /etc/consul.d/file.conf
-  # - src: /etc/consul.d/file.j2
-  #   dest: /etc/consul.d/file
-```
-This variable lets you copy extra configuration files and directories over to the target host(s). It is a list of dicts. Each dict needs a `src` and a `dest` attribute. The source is expected to be located on the deployment machine. The source can be either a file or a directory. The destination must match the type of the source (file to file, dir to dir). If the source is a directory, every file inside of it will be recursively copied and templated over to the target directory.
+#### File: defaults/main.yml
 
-For example, if you have the following source files to copy:
+| Var          | Type         | Value       |Required    | Title       |
+|--------------|--------------|-------------|-------------|-------------|
+| [hashicorp_consul_version](defaults/main.yml#L4)   | str   | `latest`  |  n/a  |  n/a |
+| [hashicorp_consul_start_service](defaults/main.yml#L5)   | bool   | `True`  |  n/a  |  n/a |
+| [hashicorp_consul_config_dir](defaults/main.yml#L6)   | str   | `/etc/consul.d`  |  n/a  |  n/a |
+| [hashicorp_consul_data_dir](defaults/main.yml#L7)   | str   | `/opt/consul`  |  n/a  |  n/a |
+| [hashicorp_consul_certs_dir](defaults/main.yml#L8)   | str   | `{{ hashicorp_consul_config_dir }}/tls`  |  n/a  |  n/a |
+| [hashicorp_consul_logs_dir](defaults/main.yml#L9)   | str   | `/var/log/consul`  |  n/a  |  n/a |
+| [hashicorp_consul_envoy_install](defaults/main.yml#L11)   | bool   | `False`  |  n/a  |  n/a |
+| [hashicorp_consul_envoy_version](defaults/main.yml#L12)   | str   | `latest`  |  n/a  |  n/a |
+| [hashicorp_consul_extra_files](defaults/main.yml#L14)   | bool   | `False`  |  n/a  |  n/a |
+| [hashicorp_consul_extra_files_list](defaults/main.yml#L15)   | list   | `[]`  |  n/a  |  n/a |
+| [hashicorp_consul_env_variables](defaults/main.yml#L17)   | dict   | `{}`  |  n/a  |  n/a |
+| [hashicorp_consul_extra_configuration](defaults/main.yml#L28)   | dict   | `{}`  |  n/a  |  n/a |
+| [hashicorp_consul_domain](defaults/main.yml#L36)   | str   | `consul`  |  n/a  |  consul domain |
+| [hashicorp_consul_datacenter](defaults/main.yml#L37)   | str   | `dc1`  |  n/a  |  n/a |
+| [hashicorp_consul_primary_datacenter](defaults/main.yml#L38)   | str   | `{{ hashicorp_consul_datacenter }}`  |  n/a  |  n/a |
+| [hashicorp_consul_gossip_encryption_key](defaults/main.yml#L39)   | str   | `{{ 'mysupersecretgossipencryptionkey'\|b64encode }}`  |  n/a  |  n/a |
+| [hashicorp_consul_enable_script_checks](defaults/main.yml#L40)   | bool   | `False`  |  n/a  |  n/a |
+| [hashicorp_consul_leave_on_terminate](defaults/main.yml#L46)   | bool   | `True`  |  n/a  |  n/a |
+| [hashicorp_consul_rejoin_after_leave](defaults/main.yml#L47)   | bool   | `True`  |  n/a  |  n/a |
+| [hashicorp_consul_join_configuration](defaults/main.yml#L53)   | dict   | `{'retry_join': ['{{ ansible_default_ipv4.address }}'], 'retry_interval': '30s', 'retry_max': 0}`  |  n/a  |  n/a |
+| [hashicorp_consul_enable_server](defaults/main.yml#L63)   | bool   | `True`  |  n/a  |  n/a |
+| [hashicorp_consul_bootstrap_expect](defaults/main.yml#L64)   | int   | `1`  |  n/a  |  n/a |
+| [hashicorp_consul_ui_configuration](defaults/main.yml#L70)   | dict   | `{'enabled': '{{ hashicorp_consul_enable_server }}'}`  |  n/a  |  n/a |
+| [hashicorp_consul_bind_addr](defaults/main.yml#L77)   | str   | `0.0.0.0`  |  n/a  |  n/a |
+| [hashicorp_consul_advertise_addr](defaults/main.yml#L78)   | str   | `{{ ansible_default_ipv4.address }}`  |  n/a  |  n/a |
+| [hashicorp_consul_address_configuration](defaults/main.yml#L79)   | dict   | `{'client_addr': '{{ hashicorp_consul_bind_addr }}', 'bind_addr': '{{ hashicorp_consul_advertise_addr }}', 'advertise_addr': '{{ hashicorp_consul_advertise_addr }}'}`  |  n/a  |  n/a |
+| [hashicorp_consul_acl_configuration](defaults/main.yml#L88)   | dict   | `{'enabled': False, 'default_policy': 'deny', 'enable_token_persistence': True}`  |  n/a  |  n/a |
+| [hashicorp_consul_mesh_configuration](defaults/main.yml#L99)   | dict   | `{'enabled': False}`  |  n/a  |  n/a |
+| [hashicorp_consul_dns_configuration](defaults/main.yml#L106)   | dict   | `{'allow_stale': True, 'enable_truncate': True, 'only_passing': True}`  |  n/a  |  n/a |
+| [hashicorp_consul_enable_tls](defaults/main.yml#L115)   | bool   | `False`  |  n/a  |  n/a |
+| [hashicorp_consul_tls_configuration](defaults/main.yml#L116)   | dict   | `{'defaults': {'ca_file': '/etc/ssl/certs/ca-certificates.crt', 'cert_file': '{{ hashicorp_consul_certs_dir }}/cert.pem', 'key_file': '{{ hashicorp_consul_certs_dir }}/key.pem', 'verify_incoming': False, 'verify_outgoing': True}, 'internal_rpc': {'verify_server_hostname': True}}`  |  n/a  |  n/a |
+| [hashicorp_consul_certificates_extra_files_dir](defaults/main.yml#L126)   | list   | `[]`  |  n/a  |  n/a |
+| [hashicorp_consul_log_level](defaults/main.yml#L135)   | str   | `info`  |  n/a  |  n/a |
+| [hashicorp_consul_enable_log_to_file](defaults/main.yml#L136)   | bool   | `False`  |  n/a  |  n/a |
+| [hashicorp_consul_log_to_file_configuration](defaults/main.yml#L137)   | dict   | `{'log_file': '{{ hashicorp_consul_logs_dir }}/consul.log', 'log_rotate_duration': '24h', 'log_rotate_max_files': 30}`  |  n/a  |  n/a |
+<details>
+<summary>🖇️ Full descriptions for vars in defaults/main.yml</summary>
+<br>
+<b>hashicorp_consul_domain:</b> the domain that the consul used in dns resolution, defaults to `consul`
+<br>
+<br>
+</details>
 
-```bash
-├── directory
-│   ├── recursive
-│   │   ├── test4.j2
-│   │   └── test.j2024.conf
-│   └── test3
-├── file
-├── file2.j2
-```
-You can set:
 
-```yaml
-hashicorp_consul_extra_files_list: [] # by default, set to []
-  - src: /tmp/directory
-    dest: /etc/consul.d/directory
-  - src: /tmp/file
-    dest: /etc/consul.d/file.conf
-  - src: /etc/consul.d/file2.j2
-    dest: /etc/consul.d/file2.conf
-```
-all the files shown above will be copied over, and the directory structure inside `directory` will be preserved.
+### Vars
 
-```yaml
-hashicorp_consul_envoy_install: false # by default, set to false
-```
-This variable allows you to install the envoy binary on the consul node, in case you need to deploy connect proxies. This feature is usefull when deploying consul agents that will handle services in the service mesh. It is NOT required on server nodes (since they most likely wont have services running in service mesh).
+**These are variables with higher priority**
+#### File: vars/main.yml
 
-```yaml
-hashicorp_consul_envoy_version: latest # by default, set to latest
-```
-This variable defines which version of envoy to install in case `hashicorp_consul_envoy_install` is set to true. **IMPORTANT:** The `latest` version set by default is not guaranteed to work, please refer to the [documentation](https://developer.hashicorp.com/consul/docs/connect/proxies/envoy#supported-versions) for informations about the support matrix for consul and envoy.
+| Var          | Type         | Value       |Required    | Title       |
+|--------------|--------------|-------------|-------------|-------------|
+| [hashicorp_consul_user](vars/main.yml#L3)    | str   | `consul`  | n/a | n/a |
+| [hashicorp_consul_group](vars/main.yml#L4)    | str   | `consul`  | n/a | n/a |
+| [hashicorp_consul_binary_path](vars/main.yml#L5)    | str   | `/usr/local/bin/consul`  | n/a | n/a |
+| [hashicorp_consul_envoy_binary_path](vars/main.yml#L6)    | str   | `/usr/local/bin/envoy`  | n/a | n/a |
+| [hashicorp_consul_deb_architecture_map](vars/main.yml#L7)    | dict   | `{'x86_64': 'amd64', 'aarch64': 'arm64', 'armv7l': 'arm', 'armv6l': 'arm'}`  | n/a | n/a |
+| [hashicorp_consul_envoy_architecture_map](vars/main.yml#L12)    | dict   | `{'x86_64': 'x86_64', 'aarch64': 'aarch64'}`  | n/a | n/a |
+| [hashicorp_consul_architecture](vars/main.yml#L15)    | str   | `{{ hashicorp_consul_deb_architecture_map[ansible_architecture] \| default(ansible_architecture) }}`  | n/a | n/a |
+| [hashicorp_consul_envoy_architecture](vars/main.yml#L16)    | str   | `{{ hashicorp_consul_envoy_architecture_map[ansible_architecture] \| default(ansible_architecture) }}`  | n/a | n/a |
+| [hashicorp_consul_service_name](vars/main.yml#L17)    | str   | `consul`  | n/a | n/a |
+| [hashicorp_consul_github_api](vars/main.yml#L18)    | str   | `https://api.github.com/repos`  | n/a | n/a |
+| [hashicorp_consul_envoy_github_project](vars/main.yml#L19)    | str   | `envoyproxy/envoy`  | n/a | n/a |
+| [hashicorp_consul_github_project](vars/main.yml#L20)    | str   | `hashicorp/consul`  | n/a | n/a |
+| [hashicorp_consul_github_url](vars/main.yml#L21)    | str   | `https://github.com`  | n/a | n/a |
+| [hashicorp_consul_repository_url](vars/main.yml#L22)    | str   | `https://releases.hashicorp.com/consul`  | n/a | n/a |
+| [hashicorp_consul_configuration](vars/main.yml#L24)    | dict   | `{'domain': '{{ hashicorp_consul_domain }}', 'datacenter': '{{ hashicorp_consul_datacenter }}', 'primary_datacenter': '{{ hashicorp_consul_primary_datacenter }}', 'data_dir': '{{ hashicorp_consul_data_dir }}', 'encrypt': '{{ hashicorp_consul_gossip_encryption_key }}', 'server': '{{ hashicorp_consul_enable_server }}', 'ui_config': '{{ hashicorp_consul_ui_configuration }}', 'connect': '{{ hashicorp_consul_mesh_configuration }}', 'leave_on_terminate': '{{ hashicorp_consul_leave_on_terminate }}', 'rejoin_after_leave': '{{ hashicorp_consul_rejoin_after_leave }}', 'enable_script_checks': '{{ hashicorp_consul_enable_script_checks }}', 'enable_syslog': True, 'acl': '{{ hashicorp_consul_acl_configuration }}', 'dns_config': '{{ hashicorp_consul_dns_configuration }}', 'log_level': '{{ hashicorp_consul_log_level }}', 'ports': {'dns': 8600, 'server': 8300, 'serf_lan': 8301, 'serf_wan': 8302, 'sidecar_min_port': 21000, 'sidecar_max_port': 21255, 'expose_min_port': 21500, 'expose_max_port': 21755}}`  | n/a | n/a |
+| [hashicorp_consul_configuration_string](vars/main.yml#L50)    | str   | `ports:
+  http: {{ ('8500'\|int) if not hashicorp_consul_enable_tls else ('-1' \| int) }}
+  https: {{ ('8501'\|int) if hashicorp_consul_enable_tls else ('-1' \| int) }}
+  grpc: {{ ('8502'\|int) if not hashicorp_consul_enable_tls else ('-1' \| int) }}
+  grpc_tls: {{ ('8503'\|int) if hashicorp_consul_enable_tls else ('-1' \| int) }}
+`  | n/a | n/a |
+| [hashicorp_consul_server_configuration_string](vars/main.yml#L57)    | str   | `bootstrap_expect: {{ hashicorp_consul_bootstrap_expect }}
+`  | n/a | n/a |
 
-```yaml
-hashicorp_consul_configuration: {} # by default, set to a simple configuration
-```
-This variable sets all of the configuration parameters for consul. For more information on all of them, please check the [documentation](https://developer.hashicorp.com/consul/docs/agent/config/config-files). This variable is parsed and converted to json format to create the config file, so each key and value should be set according to the documentation. This method of passing configuration allows for compatibility with every configuration parameters that consul has to offer. The defaults are simply here to deploy a simple, single-node consul server without much configuration, and should NOT be used in production. You will want to edit this to deploy production-ready clusters.
 
-Dependencies
-------------
+### Tasks
 
-None.
 
-Example Playbook
-----------------
+#### File: tasks/recursive_copy_extra_dirs.yml
 
-```yaml
-# calling the role inside a playbook with either the default or group_vars/host_vars
-- hosts: servers
-  roles:
-    - ednz_cloud.hashicorp_consul
-```
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Ensure destination directory exists | ansible.builtin.file | False |  |
+| Create extra directory sources | ansible.builtin.file | True |  |
+| Template extra directory sources | ansible.builtin.template | True |  |
 
-License
--------
+#### File: tasks/merge_variables.yml
 
-MIT / BSD
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Consul \| Merge stringified configuration | vars | False |  |
+| Consul \| Merge server specific stringified configuration | vars | True |  |
+| Consul \| Merge addresses configuration | vars | False |  |
+| Consul \| Merge TLS configuration | vars | True |  |
+| Consul \| Merge extra configuration settings | vars | False |  |
+| Consul \| Merge log to file configuration | vars | True |  |
 
-Author Information
-------------------
+#### File: tasks/main.yml
 
-This role was created by Bertrand Lanson in 2023.
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Consul \| Set reload-check & restart-check variable | ansible.builtin.set_fact | False |  |
+| Consul \| Import merge_variables.yml | ansible.builtin.include_tasks | False |  |
+| Consul \| Import prerequisites.yml | ansible.builtin.include_tasks | False |  |
+| Consul \| Import install_envoy.yml | ansible.builtin.include_tasks | True |  |
+| Consul \| Import install.yml | ansible.builtin.include_tasks | False |  |
+| Consul \| Import configure.yml | ansible.builtin.include_tasks | False |  |
+| Consul \| Populate service facts | ansible.builtin.service_facts | False |  |
+| Consul \| Set restart-check variable | ansible.builtin.set_fact | True |  |
+| Consul \| Enable service: {{ hashicorp_consul_service_name }} | ansible.builtin.service | False |  |
+| Consul \| Reload systemd daemon | ansible.builtin.systemd | True |  |
+| Consul \| Start service: {{ hashicorp_consul_service_name }} | ansible.builtin.service | True |  |
+
+#### File: tasks/install.yml
+
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Get latest release of consul | block | True |  |
+| Get latest consul release from github api | ansible.builtin.uri | False |  |
+| Set wanted consul version to latest tag | ansible.builtin.set_fact | False |  |
+| Set wanted consul version to {{ hashicorp_consul_version }} | ansible.builtin.set_fact | True |  |
+| Get current consul version | block | False |  |
+| Stat consul version file | ansible.builtin.stat | False |  |
+| Get current consul version | ansible.builtin.slurp | True |  |
+| Download and install consul binary | block | True |  |
+| Set consul package name to download | ansible.builtin.set_fact | False |  |
+| Download checksum file for consul archive | ansible.builtin.get_url | False |  |
+| Extract correct checksum from checksum file | ansible.builtin.command | False |  |
+| Parse the expected checksum | ansible.builtin.set_fact | False |  |
+| Download consul binary archive | ansible.builtin.get_url | False |  |
+| Create temporary directory for archive decompression | ansible.builtin.file | False |  |
+| Unpack consul archive | ansible.builtin.unarchive | False |  |
+| Copy consul binary to {{ hashicorp_consul_binary_path }} | ansible.builtin.copy | False |  |
+| Update consul version file | ansible.builtin.copy | False |  |
+| Set restart-check variable | ansible.builtin.set_fact | False |  |
+| Cleanup temporary directory | ansible.builtin.file | False |  |
+| Copy systemd service file for consul | ansible.builtin.template | False |  |
+| Set reload-check & restart-check variable | ansible.builtin.set_fact | True |  |
+
+#### File: tasks/install_envoy.yml
+
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Get release for envoy:{{ hashicorp_consul_envoy_version }} | vars | False |  |
+| Check if envoy is already installed | ansible.builtin.stat | False |  |
+| Check current envoy version | ansible.builtin.command | True |  |
+| Set facts for wanted envoy release | ansible.builtin.set_fact | True |  |
+| Set facts for current envoy release | ansible.builtin.set_fact | True |  |
+| Create envoy directory | ansible.builtin.file | False |  |
+| Install envoy | block | True |  |
+| Remove old compose binary if different | ansible.builtin.file | False |  |
+| Download and install envoy version:{{ hashicorp_consul_envoy_version }} | ansible.builtin.get_url | False |  |
+| Update version file | ansible.builtin.copy | False |  |
+
+#### File: tasks/prerequisites.yml
+
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Create group {{ hashicorp_consul_group }} | ansible.builtin.group | False |  |
+| Create user {{ hashicorp_consul_user }} | ansible.builtin.user | False |  |
+| Create directory {{ hashicorp_consul_config_dir }} | ansible.builtin.file | False |  |
+| Create directory {{ hashicorp_consul_data_dir}} | ansible.builtin.file | False |  |
+
+#### File: tasks/configure.yml
+
+| Name | Module | Has Conditions | Comments |
+| ---- | ------ | --------- |  -------- |
+| Create consul.env | ansible.builtin.template | False |  |
+| Copy consul.json template | ansible.builtin.template | False |  |
+| Set restart-check variable | ansible.builtin.set_fact | True |  |
+| Copy extra configuration files | block | True |  |
+| Get extra file types | ansible.builtin.stat | False |  |
+| Set list for file sources | vars | True |  |
+| Set list for directory sources | vars | True |  |
+| Template extra file sources | ansible.builtin.template | True |  |
+| Template extra directory sources | ansible.builtin.include_tasks | True |  |
+
+
+
+
+
+
+
+## Author Information
+Bertrand Lanson
+
+#### License
+
+license (BSD, MIT)
+
+#### Minimum Ansible Version
+
+2.10
+
+#### Platforms
+
+- **Ubuntu**: ['focal', 'jammy', 'noble']
+- **Debian**: ['bullseye', 'bookworm']
+
+<!-- DOCSIBLE END -->
