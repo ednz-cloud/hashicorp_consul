@@ -1,57 +1,140 @@
 ---
 # defaults file for hashicorp_consul
+
+hashicorp_consul_version: "latest"
 hashicorp_consul_start_service: true
-hashicorp_consul_version: latest
-hashicorp_consul_env_variables: {}
+hashicorp_consul_config_dir: "/etc/consul.d"
 hashicorp_consul_data_dir: "/opt/consul"
-hashicorp_consul_extra_files: false
-hashicorp_consul_extra_files_list: []
+hashicorp_consul_certs_dir: "{{ hashicorp_consul_config_dir }}/tls"
+hashicorp_consul_logs_dir: "/var/log/consul"
+
 hashicorp_consul_envoy_install: false
 hashicorp_consul_envoy_version: latest
-#! consul configuration
-hashicorp_consul_configuration:
-  domain: consul
-  datacenter: dc1
-  primary_datacenter: dc1
-  client_addr: "0.0.0.0"
-  bind_addr: "{{ ansible_default_ipv4.address }}"
-  advertise_addr: "{{ ansible_default_ipv4.address }}"
-  data_dir: "{{ hashicorp_consul_data_dir }}"
-  encrypt: "{{ 'mysupersecretgossipencryptionkey'|b64encode }}"
-  server: true
-  bootstrap_expect: 1
+
+hashicorp_consul_extra_files: false
+hashicorp_consul_extra_files_list: []
+
+hashicorp_consul_env_variables: {}
+
+#######################
+# extra configuration #
+#######################
+
+# You should prioritize adding configuration
+# to the configuration entries below, this
+# option should be used to add pieces of configuration not
+# available through standard variables.
+
+hashicorp_consul_extra_configuration: {}
+
+###########
+# general #
+###########
+
+# title: consul domain
+# description: the domain that the consul used in dns resolution, defaults to `consul`
+hashicorp_consul_domain: consul
+hashicorp_consul_datacenter: dc1
+hashicorp_consul_primary_datacenter: "{{ hashicorp_consul_datacenter }}"
+hashicorp_consul_gossip_encryption_key: "{{ 'mysupersecretgossipencryptionkey'|b64encode }}"
+hashicorp_consul_enable_script_checks: false
+
+#######################
+# leave configuration #
+#######################
+
+hashicorp_consul_leave_on_terminate: true
+hashicorp_consul_rejoin_after_leave: true
+
+######################
+# join configuration #
+######################
+
+hashicorp_consul_join_configuration:
   retry_join:
     - "{{ ansible_default_ipv4.address }}"
-  ui_config:
-    enabled: true
-  connect:
-    enabled: false
-  leave_on_terminate: true
-  rejoin_after_leave: true
-  enable_script_checks: true
-  enable_syslog: true
-  log_level: INFO
-  acl:
-    enabled: false
-    default_policy: "allow"
-    enable_token_persistence: true
-    tokens:
-      initial_management: ""
-      agent: ""
-  dns_config:
-    allow_stale: true
-    enable_truncate: true
-    only_passing: true
-  ports:
-    dns: 8600
-    http: 8500
-    https: -1
-    grpc: 8502
-    grpc_tls: 8503
-    server: 8300
-    serf_lan: 8301
-    serf_wan: 8302
-    sidecar_min_port: 21000
-    sidecar_max_port: 21255
-    expose_min_port: 21500
-    expose_max_port: 21755
+  retry_interval: 30s
+  retry_max: 0
+
+########################
+# server configuration #
+########################
+
+hashicorp_consul_enable_server: true
+hashicorp_consul_bootstrap_expect: 1
+
+####################
+# ui configuration #
+####################
+
+hashicorp_consul_ui_configuration:
+  enabled: "{{ hashicorp_consul_enable_server }}"
+
+#########################
+# address configuration #
+#########################
+
+hashicorp_consul_bind_addr: "0.0.0.0"
+hashicorp_consul_advertise_addr: "{{ ansible_default_ipv4.address }}"
+hashicorp_consul_address_configuration:
+  client_addr: "{{ hashicorp_consul_bind_addr }}"
+  bind_addr: "{{ hashicorp_consul_advertise_addr }}"
+  advertise_addr: "{{ hashicorp_consul_advertise_addr }}"
+
+#####################
+# ACL configuration #
+#####################
+
+hashicorp_consul_acl_configuration:
+  enabled: false
+  default_policy: "deny"
+  enable_token_persistence: true
+  # tokens:
+  #   agent: ""
+
+##############################
+# service mesh configuration #
+##############################
+
+hashicorp_consul_mesh_configuration:
+  enabled: false
+
+#####################
+# DNS configuration #
+#####################
+
+hashicorp_consul_dns_configuration:
+  allow_stale: true
+  enable_truncate: true
+  only_passing: true
+
+################
+# internal tls #
+################
+
+hashicorp_consul_enable_tls: false
+hashicorp_consul_tls_configuration:
+  defaults:
+    ca_file: "/etc/ssl/certs/ca-certificates.crt"
+    cert_file: "{{ hashicorp_consul_certs_dir }}/cert.pem"
+    key_file: "{{ hashicorp_consul_certs_dir }}/key.pem"
+    verify_incoming: false
+    verify_outgoing: true
+  internal_rpc:
+    verify_server_hostname: true
+
+hashicorp_consul_certificates_extra_files_dir:
+  []
+  # - src: ""
+  #   dest: "{{ hashicorp_consul_certs_dir }}"
+
+###########
+# logging #
+###########
+
+hashicorp_consul_log_level: info
+hashicorp_consul_enable_log_to_file: false
+hashicorp_consul_log_to_file_configuration:
+  log_file: "{{ hashicorp_consul_logs_dir }}/consul.log"
+  log_rotate_duration: 24h
+  log_rotate_max_files: 30
