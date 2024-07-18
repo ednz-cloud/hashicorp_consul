@@ -1,6 +1,6 @@
 ---
 # task/install_envoy file for hashicorp_consul
-- name: "Get release for envoy:{{ hashicorp_consul_envoy_version }}"
+- name: "Consul | Get release for envoy:{{ hashicorp_consul_envoy_version }}"
   vars:
     _envoy_url_ext: "{% if hashicorp_consul_envoy_version == 'latest'%}releases{% else %}releases/tags{% endif %}"
   ansible.builtin.uri:
@@ -8,49 +8,49 @@
     return_content: true
   register: _envoy_new_release
 
-- name: "Check if envoy is already installed"
+- name: "Consul | Check if envoy is already installed"
   ansible.builtin.stat:
     path: "{{ hashicorp_consul_data_dir }}/envoy/version"
   changed_when: false
   check_mode: false
   register: _envoy_is_installed
 
-- name: "Check current envoy version"
+- name: "Consul | Check current envoy version"
   ansible.builtin.command: "cat {{ hashicorp_consul_data_dir }}/envoy/version"
   changed_when: false
   check_mode: false
   register: _envoy_old_release
   when: _envoy_is_installed.stat.exists
 
-- name: "Set facts for wanted envoy release"
+- name: "Consul | Set facts for wanted envoy release"
   ansible.builtin.set_fact:
     hashicorp_consul_envoy_wanted_version: "{{ _envoy_new_release.json['tag_name']|regex_replace('v', '') }}"
   when: _envoy_new_release.json is defined
     and (_envoy_new_release.json | length > 0)
 
-- name: "Set facts for current envoy release"
+- name: "Consul | Set facts for current envoy release"
   ansible.builtin.set_fact:
     hashicorp_consul_envoy_current_version: "{{ _envoy_old_release.stdout | regex_replace('v', '') }}"
   when: _envoy_old_release.stdout is defined
     and (_envoy_old_release.stdout | length > 0)
 
-- name: "Create envoy directory"
+- name: "Consul | Create envoy directory"
   ansible.builtin.file:
     path: "{{ hashicorp_consul_data_dir }}/envoy"
     state: directory
     mode: "0775"
 
-- name: "Install envoy"
+- name: "Consul | Install envoy"
   when: hashicorp_consul_envoy_current_version is not defined
     or hashicorp_consul_envoy_wanted_version not in hashicorp_consul_envoy_current_version
   block:
-    - name: "Remove old compose binary if different"
+    - name: "Consul | Remove old compose binary if different"
       ansible.builtin.file:
         path: "{{ hashicorp_consul_envoy_binary_path }}"
         state: absent
       register: _envoy_binary_removed
 
-    - name: "Download and install envoy version:{{ hashicorp_consul_envoy_version }}"
+    - name: "Consul | Download and install envoy version:{{ hashicorp_consul_envoy_version }}"
       ansible.builtin.get_url:
         url: "{{ hashicorp_consul_github_url }}/{{ hashicorp_consul_envoy_github_project }}/releases/download/v{{ hashicorp_consul_envoy_wanted_version }}/envoy-{{ hashicorp_consul_envoy_wanted_version }}-linux-{{ hashicorp_consul_envoy_architecture }} "
         dest: "{{ hashicorp_consul_envoy_binary_path }}"
@@ -58,7 +58,7 @@
         group: root
         mode: "0755"
 
-    - name: "Update version file"
+    - name: "Consul | Update version file"
       ansible.builtin.copy:
         content: "{{ hashicorp_consul_envoy_wanted_version }}"
         dest: "{{ hashicorp_consul_data_dir }}/envoy/version"
