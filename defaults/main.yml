@@ -31,8 +31,6 @@ hashicorp_consul_extra_configuration: {}
 # general #
 ###########
 
-# title: consul domain
-# description: the domain that the consul used in dns resolution, defaults to `consul`
 hashicorp_consul_domain: consul
 hashicorp_consul_datacenter: dc1
 hashicorp_consul_primary_datacenter: "{{ hashicorp_consul_datacenter }}"
@@ -127,6 +125,14 @@ hashicorp_consul_certificates_extra_files_dir:
   []
   # - src: ""
   #   dest: "{{ hashicorp_consul_certs_dir }}"
+
+###########################
+# telemetry configuration #
+###########################
+
+hashicorp_consul_enable_prometheus_metrics: false
+hashicorp_consul_prometheus_retention_time: 60s
+hashicorp_consul_telemetry_configuration: {}
 
 ###########
 # logging #
