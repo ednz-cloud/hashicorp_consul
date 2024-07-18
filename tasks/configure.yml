@@ -1,6 +1,6 @@
 ---
 # task/configure file for hashicorp_consul
-- name: "Create consul.env"
+- name: "Consul | Create consul.env"
   ansible.builtin.template:
     src: consul.env.j2
     dest: "{{ hashicorp_consul_config_dir }}/consul.env"
@@ -9,7 +9,7 @@
     mode: "0600"
   register: _hashicorp_consul_env_file
 
-- name: "Copy consul.json template"
+- name: "Consul | Copy consul.json template"
   ansible.builtin.template:
     src: consul.json.j2
     dest: "{{ hashicorp_consul_config_dir }}/consul.json"
@@ -18,23 +18,23 @@
     mode: "0600"
   register: _hashicorp_consul_config_file
 
-- name: "Set restart-check variable"
+- name: "Consul | Set restart-check variable"
   ansible.builtin.set_fact:
     _hashicorp_consul_service_need_restart: true
   when: _hashicorp_consul_env_file.changed or
     _hashicorp_consul_config_file.changed
 
-- name: "Copy extra configuration files"
+- name: "Consul | Copy extra configuration files"
   when: hashicorp_consul_extra_files
   block:
-    - name: "Get extra file types"
+    - name: "Consul | Get extra file types"
       ansible.builtin.stat:
         path: "{{ item.src }}"
       loop: "{{ hashicorp_consul_extra_files_list }}"
       register: hashicorp_consul_extra_file_stat
       delegate_to: localhost
 
-    - name: "Set list for file sources"
+    - name: "Consul | Set list for file sources"
       vars:
         _hashicorp_consul_file_sources: []
       ansible.builtin.set_fact:
@@ -45,7 +45,7 @@
         loop_var: item
       delegate_to: localhost
 
-    - name: "Set list for directory sources"
+    - name: "Consul | Set list for directory sources"
       vars:
         _hashicorp_consul_dir_sources: []
       ansible.builtin.set_fact:
@@ -56,7 +56,7 @@
         loop_var: item
       delegate_to: localhost
 
-    - name: "Template extra file sources"
+    - name: "Consul | Template extra file sources"
       ansible.builtin.template:
         src: "{{ item.src }}"
         dest: "{{ item.dest | regex_replace('\\.j2$', '') }}"
@@ -66,7 +66,7 @@
       loop: "{{ _hashicorp_consul_file_sources }}"
       when: _hashicorp_consul_file_sources is defined
 
-    - name: "Template extra directory sources"
+    - name: "Consul | Template extra directory sources"
       ansible.builtin.include_tasks: recursive_copy_extra_dirs.yml
       loop: "{{ _hashicorp_consul_dir_sources }}"
       loop_control:

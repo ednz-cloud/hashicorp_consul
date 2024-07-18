@@ -1,56 +1,23 @@
 ---
-hashicorp_consul_start_service: true
-hashicorp_consul_version: latest
-hashicorp_consul_env_variables: {}
-hashicorp_consul_data_dir: "/opt/consul/data"
-hashicorp_consul_extra_files: false
-hashicorp_consul_extra_files_list: []
-hashicorp_consul_envoy_install: true
-hashicorp_consul_envoy_version: v1.26.3
-#! consul configuration
-hashicorp_consul_configuration:
-  domain: consul
-  datacenter: dc1
-  primary_datacenter: dc1
-  client_addr: "0.0.0.0"
-  bind_addr: "{{ ansible_default_ipv4.address }}"
-  advertise_addr: "{{ ansible_default_ipv4.address }}"
-  data_dir: "{{ hashicorp_consul_data_dir }}"
-  encrypt: "{{ 'mysupersecretgossipencryptionkey'|b64encode }}"
-  server: true
-  bootstrap_expect: 1
-  retry_join:
-    - "{{ ansible_default_ipv4.address }}"
-  ui_config:
-    enabled: true
-  connect:
-    enabled: false
-  leave_on_terminate: true
-  rejoin_after_leave: true
-  enable_script_checks: true
-  enable_syslog: true
-  log_level: INFO
-  acl:
-    enabled: true
-    default_policy: "deny"
-    enable_token_persistence: true
-    tokens:
-      initial_management: "1a1f2ce5-3730-47de-9a9c-89e037376bab"
-      agent: "1a1f2ce5-3730-47de-9a9c-89e037376bab"
-  dns_config:
-    allow_stale: true
-    enable_truncate: true
-    only_passing: true
-  ports:
-    dns: 8600
-    http: 8500
-    https: -1
-    grpc: 8502
-    grpc_tls: 8503
-    server: 8300
-    serf_lan: 8301
-    serf_wan: 8302
-    sidecar_min_port: 21000
-    sidecar_max_port: 21255
-    expose_min_port: 21500
-    expose_max_port: 21755
+#####################
+# ACL configuration #
+#####################
+
+hashicorp_consul_acl_configuration:
+  enabled: true
+  default_policy: "deny"
+  enable_token_persistence: true
+  tokens:
+    initial_management: "1a1f2ce5-3730-47de-9a9c-89e037376bab"
+    agent: "1a1f2ce5-3730-47de-9a9c-89e037376bab"
+
+###########
+# logging #
+###########
+
+hashicorp_consul_log_level: info
+hashicorp_consul_enable_log_to_file: true
+hashicorp_consul_log_to_file_configuration:
+  log_file: "{{ hashicorp_consul_logs_dir }}/consul.log"
+  log_rotate_duration: 24h
+  log_rotate_max_files: 30

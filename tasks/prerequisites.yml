@@ -1,18 +1,18 @@
 ---
 # task/prerequisites file for hashicorp_consul
-- name: "Create group {{ hashicorp_consul_group }}"
+- name: "Consul | Create group {{ hashicorp_consul_group }}"
   ansible.builtin.group:
     name: "{{ hashicorp_consul_group }}"
     state: present
 
-- name: "Create user {{ hashicorp_consul_user }}"
+- name: "Consul | Create user {{ hashicorp_consul_user }}"
   ansible.builtin.user:
     name: "{{ hashicorp_consul_user }}"
     group: "{{ hashicorp_consul_group }}"
     shell: /bin/false
     state: present
 
-- name: "Create directory {{ hashicorp_consul_config_dir }}"
+- name: "Consul | Create directory {{ hashicorp_consul_config_dir }}"
   ansible.builtin.file:
     path: "{{ hashicorp_consul_config_dir }}"
     state: directory
@@ -20,10 +20,27 @@
     group: "{{ hashicorp_consul_group }}"
     mode: "0755"
 
-- name: "Create directory {{ hashicorp_consul_data_dir}}"
+- name: "Consul | Create directory {{ hashicorp_consul_data_dir}}"
   ansible.builtin.file:
     path: "{{ hashicorp_consul_data_dir }}"
     state: directory
     owner: "{{ hashicorp_consul_user }}"
     group: "{{ hashicorp_consul_group }}"
     mode: "0755"
+
+- name: "Consul | Create directory {{ hashicorp_consul_certs_dir }}"
+  ansible.builtin.file:
+    path: "{{ hashicorp_consul_certs_dir }}"
+    state: directory
+    owner: "{{ hashicorp_consul_user }}"
+    group: "{{ hashicorp_consul_group }}"
+    mode: "0755"
+
+- name: "Consul | Create directory {{ hashicorp_consul_logs_dir }}"
+  ansible.builtin.file:
+    path: "{{ hashicorp_consul_logs_dir }}"
+    state: directory
+    owner: "{{ hashicorp_consul_user }}"
+    group: "{{ hashicorp_consul_group }}"
+    mode: "0755"
+  when: hashicorp_consul_enable_log_to_file

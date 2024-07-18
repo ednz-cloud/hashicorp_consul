@@ -135,21 +135,29 @@
       block:
         - name: "Command consul kv put"
           ansible.builtin.command: "consul kv put foo bar"
+          environment:
+            CONSUL_HTTP_ADDR: "http://{{ ansible_default_ipv4.address }}:8500"
           changed_when: false
           register: consul_kv_put
 
         - name: "Command consul kv get"
           ansible.builtin.command: "consul kv get foo"
+          environment:
+            CONSUL_HTTP_ADDR: "http://{{ ansible_default_ipv4.address }}:8500"
           changed_when: false
           register: consul_kv_get
 
         - name: "Command consul kv delete"
           ansible.builtin.command: "consul kv delete foo"
+          environment:
+            CONSUL_HTTP_ADDR: "http://{{ ansible_default_ipv4.address }}:8500"
           changed_when: false
           register: consul_kv_delete
 
         - name: "Command consul members"
           ansible.builtin.command: "consul members"
+          environment:
+            CONSUL_HTTP_ADDR: "http://{{ ansible_default_ipv4.address }}:8500"
           changed_when: false
           register: consul_members
 

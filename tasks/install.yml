@@ -1,33 +1,33 @@
 ---
 # task/install file for hashicorp_consul
-- name: "Get latest release of consul"
+- name: "Consul | Get latest release of consul"
   when: hashicorp_consul_version == 'latest'
   block:
-    - name: "Get latest consul release from github api"
+    - name: "Consul | Get latest consul release from github api"
       ansible.builtin.uri:
         url: "{{ hashicorp_consul_github_api }}/{{ hashicorp_consul_github_project }}/releases/latest"
         return_content: true
       register: _hashicorp_consul_latest_release
 
-    - name: "Set wanted consul version to latest tag"
+    - name: "Consul | Set wanted consul version to latest tag"
       ansible.builtin.set_fact:
         _hashicorp_consul_wanted_version: "{{ _hashicorp_consul_latest_release.json['tag_name']|regex_replace('v', '') }}"
 
-- name: "Set wanted consul version to {{ hashicorp_consul_version }}"
+- name: "Consul | Set wanted consul version to {{ hashicorp_consul_version }}"
   ansible.builtin.set_fact:
     _hashicorp_consul_wanted_version: "{{ hashicorp_consul_version|regex_replace('v', '') }}"
   when: hashicorp_consul_version != 'latest'
 
-- name: "Get current consul version"
+- name: "Consul | Get current consul version"
   block:
-    - name: "Stat consul version file"
+    - name: "Consul | Stat consul version file"
       ansible.builtin.stat:
         path: "{{ hashicorp_consul_config_dir }}/.version"
       changed_when: false
       check_mode: false
       register: _hashicorp_consul_version_file
 
-    - name: "Get current consul version"
+    - name: "Consul | Get current consul version"
       ansible.builtin.slurp:
         src: "{{ _hashicorp_consul_version_file.stat.path }}"
       when:
@@ -35,18 +35,18 @@
         - _hashicorp_consul_version_file.stat.isreg
       register: _hashicorp_consul_current_version
 
-- name: "Download and install consul binary"
+- name: "Consul | Download and install consul binary"
   when: _hashicorp_consul_current_version is not defined
     or _hashicorp_consul_wanted_version != (_hashicorp_consul_current_version.content|default('')|b64decode)
   block:
-    - name: "Set consul package name to download"
+    - name: "Consul | Set consul package name to download"
       ansible.builtin.set_fact:
         _hashicorp_consul_package_name: >-
           consul_{{ _hashicorp_consul_wanted_version }}_linux_{{ hashicorp_consul_deb_architecture_map[ansible_architecture] }}.zip
         _hashicorp_consul_shasum_file_name: >-
           consul_{{ _hashicorp_consul_wanted_version }}_SHA256SUMS
 
-    - name: "Download checksum file for consul archive"
+    - name: "Consul | Download checksum file for consul archive"
       ansible.builtin.get_url:
         url: "{{ hashicorp_consul_repository_url }}/{{ _hashicorp_consul_wanted_version }}/{{ _hashicorp_consul_shasum_file_name }}"
         dest: "/tmp/{{ _hashicorp_consul_shasum_file_name }}"
@@ -57,17 +57,17 @@
       delay: 2
       check_mode: false
 
-    - name: "Extract correct checksum from checksum file"
+    - name: "Consul | Extract correct checksum from checksum file"
       ansible.builtin.command:
         cmd: 'grep "{{ _hashicorp_consul_package_name }}" /tmp/{{ _hashicorp_consul_shasum_file_name }}'
       changed_when: false
       register: _hashicorp_consul_expected_checksum_line
 
-    - name: "Parse the expected checksum"
+    - name: "Consul | Parse the expected checksum"
       ansible.builtin.set_fact:
         _hashicorp_consul_expected_checksum: "{{ _hashicorp_consul_expected_checksum_line.stdout.split()[0] }}"
 
-    - name: "Download consul binary archive"
+    - name: "Consul | Download consul binary archive"
       ansible.builtin.get_url:
         url: "{{ hashicorp_consul_repository_url }}/{{ _hashicorp_consul_wanted_version }}/{{ _hashicorp_consul_package_name }}"
         dest: "/tmp/{{ _hashicorp_consul_package_name }}"
@@ -79,13 +79,13 @@
       delay: 2
       check_mode: false
 
-    - name: "Create temporary directory for archive decompression"
+    - name: "Consul | Create temporary directory for archive decompression"
       ansible.builtin.file:
         path: /tmp/consul
         state: directory
         mode: "0755"
 
-    - name: "Unpack consul archive"
+    - name: "Consul | Unpack consul archive"
       ansible.builtin.unarchive:
         src: "/tmp/{{ _hashicorp_consul_package_name }}"
         dest: "/tmp/consul"
@@ -94,7 +94,7 @@
         mode: "0755"
         remote_src: true
 
-    - name: "Copy consul binary to {{ hashicorp_consul_binary_path }}"
+    - name: "Consul | Copy consul binary to {{ hashicorp_consul_binary_path }}"
       ansible.builtin.copy:
         src: /tmp/consul/consul
         dest: "{{ hashicorp_consul_binary_path }}"
@@ -104,7 +104,7 @@
         remote_src: true
         force: true
 
-    - name: "Update consul version file"
+    - name: "Consul | Update consul version file"
       ansible.builtin.copy:
         content: "{{ _hashicorp_consul_wanted_version }}"
         dest: "{{ hashicorp_consul_config_dir }}/.version"
@@ -112,11 +112,11 @@
         group: "{{ hashicorp_consul_group }}"
         mode: "0600"
 
-    - name: "Set restart-check variable"
+    - name: "Consul | Set restart-check variable"
       ansible.builtin.set_fact:
         _hashicorp_consul_service_need_restart: true
 
-    - name: "Cleanup temporary directory"
+    - name: "Consul | Cleanup temporary directory"
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
@@ -125,7 +125,7 @@
         - /tmp/{{ _hashicorp_consul_package_name }}
         - /tmp/{{ _hashicorp_consul_shasum_file_name }}
 
-- name: "Copy systemd service file for consul"
+- name: "Consul | Copy systemd service file for consul"
   ansible.builtin.template:
     src: "consul.service.j2"
     dest: "/etc/systemd/system/{{ hashicorp_consul_service_name }}.service"
@@ -134,7 +134,7 @@
     mode: "0644"
   register: _hashicorp_consul_unit_file
 
-- name: "Set reload-check & restart-check variable"
+- name: "Consul | Set reload-check & restart-check variable"
   ansible.builtin.set_fact:
     _hashicorp_consul_service_need_reload: true
     _hashicorp_consul_service_need_restart: true
