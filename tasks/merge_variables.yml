@@ -81,7 +81,3 @@
           hashicorp_consul_configuration |
           combine(_config_to_merge, recursive=true)
           }}"
-# - debug:
-#     msg: "{{ hashicorp_consul_configuration }}"
-
-# - fail:
