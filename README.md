@@ -105,25 +105,27 @@ Description: Install and configure hashicorp consul for debian-based distros.
 
 #### File: tasks/recursive_copy_extra_dirs.yml
 
-| Name                                | Module                   | Has Conditions | Comments |
-|-------------------------------------|--------------------------|----------------|----------|
-| Ensure destination directory exists | ansible.builtin.file     | False          |          |
-| Create extra directory sources      | ansible.builtin.file     | True           |          |
-| Template extra directory sources    | ansible.builtin.template | True           |          |
+| Name                                          | Module                   | Has Conditions | Comments |
+|-----------------------------------------------|--------------------------|----------------|----------|
+| Consul \| Ensure destination directory exists | ansible.builtin.file     | False          |          |
+| Consul \| Create extra directory sources      | ansible.builtin.file     | True           |          |
+| Consul \| Template extra directory sources    | ansible.builtin.template | True           |          |
 
 #### File: tasks/merge_variables.yml
 
-| Name                                                      | Module | Has Conditions | Comments |
-|-----------------------------------------------------------|--------|----------------|----------|
-| Consul \| Merge stringified configuration                 | vars   | False          |          |
-| Consul \| Merge server specific stringified configuration | vars   | True           |          |
-| Consul \| Merge addresses configuration                   | vars   | False          |          |
-| Consul \| Merge TLS configuration                         | vars   | True           |          |
-| Consul \| Merge extra configuration settings              | vars   | False          |          |
-| Consul \| Merge log to file configuration                 | vars   | True           |          |
-| Consul \| Merge telemetry configuration                   | block  | False          |          |
-| Consul \| Merge prometheus metrics configuration          | vars   | True           |          |
-| Consul \| Merge telemtry configuration                    | vars   | False          |          |
+| Name                                                      | Module                   | Has Conditions | Comments |
+|-----------------------------------------------------------|--------------------------|----------------|----------|
+| Consul \| Merge stringified configuration                 | vars                     | False          |          |
+| Consul \| Merge server specific stringified configuration | vars                     | True           |          |
+| Consul \| Merge addresses configuration                   | vars                     | False          |          |
+| Consul \| Merge TLS configuration                         | block                    | True           |          |
+| Consul \| Merge TLS configuration                         | vars                     | False          |          |
+| Consul \| Add certificates directory to extra_files_dir   | ansible.builtin.set_fact | False          |          |
+| Consul \| Merge extra configuration settings              | vars                     | False          |          |
+| Consul \| Merge log to file configuration                 | vars                     | True           |          |
+| Consul \| Merge telemetry configuration                   | block                    | False          |          |
+| Consul \| Merge prometheus metrics configuration          | vars                     | True           |          |
+| Consul \| Merge telemtry configuration                    | vars                     | False          |          |
 
 #### File: tasks/main.yml
 
@@ -143,69 +145,69 @@ Description: Install and configure hashicorp consul for debian-based distros.
 
 #### File: tasks/install.yml
 
-| Name                                                        | Module                    | Has Conditions | Comments |
-|-------------------------------------------------------------|---------------------------|----------------|----------|
-| Get latest release of consul                                | block                     | True           |          |
-| Get latest consul release from github api                   | ansible.builtin.uri       | False          |          |
-| Set wanted consul version to latest tag                     | ansible.builtin.set_fact  | False          |          |
-| Set wanted consul version to {{ hashicorp_consul_version }} | ansible.builtin.set_fact  | True           |          |
-| Get current consul version                                  | block                     | False          |          |
-| Stat consul version file                                    | ansible.builtin.stat      | False          |          |
-| Get current consul version                                  | ansible.builtin.slurp     | True           |          |
-| Download and install consul binary                          | block                     | True           |          |
-| Set consul package name to download                         | ansible.builtin.set_fact  | False          |          |
-| Download checksum file for consul archive                   | ansible.builtin.get_url   | False          |          |
-| Extract correct checksum from checksum file                 | ansible.builtin.command   | False          |          |
-| Parse the expected checksum                                 | ansible.builtin.set_fact  | False          |          |
-| Download consul binary archive                              | ansible.builtin.get_url   | False          |          |
-| Create temporary directory for archive decompression        | ansible.builtin.file      | False          |          |
-| Unpack consul archive                                       | ansible.builtin.unarchive | False          |          |
-| Copy consul binary to {{ hashicorp_consul_binary_path }}    | ansible.builtin.copy      | False          |          |
-| Update consul version file                                  | ansible.builtin.copy      | False          |          |
-| Set restart-check variable                                  | ansible.builtin.set_fact  | False          |          |
-| Cleanup temporary directory                                 | ansible.builtin.file      | False          |          |
-| Copy systemd service file for consul                        | ansible.builtin.template  | False          |          |
-| Set reload-check & restart-check variable                   | ansible.builtin.set_fact  | True           |          |
+| Name                                                                  | Module                    | Has Conditions | Comments |
+|-----------------------------------------------------------------------|---------------------------|----------------|----------|
+| Consul \| Get latest release of consul                                | block                     | True           |          |
+| Consul \| Get latest consul release from github api                   | ansible.builtin.uri       | False          |          |
+| Consul \| Set wanted consul version to latest tag                     | ansible.builtin.set_fact  | False          |          |
+| Consul \| Set wanted consul version to {{ hashicorp_consul_version }} | ansible.builtin.set_fact  | True           |          |
+| Consul \| Get current consul version                                  | block                     | False          |          |
+| Consul \| Stat consul version file                                    | ansible.builtin.stat      | False          |          |
+| Consul \| Get current consul version                                  | ansible.builtin.slurp     | True           |          |
+| Consul \| Download and install consul binary                          | block                     | True           |          |
+| Consul \| Set consul package name to download                         | ansible.builtin.set_fact  | False          |          |
+| Consul \| Download checksum file for consul archive                   | ansible.builtin.get_url   | False          |          |
+| Consul \| Extract correct checksum from checksum file                 | ansible.builtin.command   | False          |          |
+| Consul \| Parse the expected checksum                                 | ansible.builtin.set_fact  | False          |          |
+| Consul \| Download consul binary archive                              | ansible.builtin.get_url   | False          |          |
+| Consul \| Create temporary directory for archive decompression        | ansible.builtin.file      | False          |          |
+| Consul \| Unpack consul archive                                       | ansible.builtin.unarchive | False          |          |
+| Consul \| Copy consul binary to {{ hashicorp_consul_binary_path }}    | ansible.builtin.copy      | False          |          |
+| Consul \| Update consul version file                                  | ansible.builtin.copy      | False          |          |
+| Consul \| Set restart-check variable                                  | ansible.builtin.set_fact  | False          |          |
+| Consul \| Cleanup temporary directory                                 | ansible.builtin.file      | False          |          |
+| Consul \| Copy systemd service file for consul                        | ansible.builtin.template  | False          |          |
+| Consul \| Set reload-check & restart-check variable                   | ansible.builtin.set_fact  | True           |          |
 
 #### File: tasks/install_envoy.yml
 
-| Name                                                                    | Module                   | Has Conditions | Comments |
-|-------------------------------------------------------------------------|--------------------------|----------------|----------|
-| Get release for envoy:{{ hashicorp_consul_envoy_version }}              | vars                     | False          |          |
-| Check if envoy is already installed                                     | ansible.builtin.stat     | False          |          |
-| Check current envoy version                                             | ansible.builtin.command  | True           |          |
-| Set facts for wanted envoy release                                      | ansible.builtin.set_fact | True           |          |
-| Set facts for current envoy release                                     | ansible.builtin.set_fact | True           |          |
-| Create envoy directory                                                  | ansible.builtin.file     | False          |          |
-| Install envoy                                                           | block                    | True           |          |
-| Remove old compose binary if different                                  | ansible.builtin.file     | False          |          |
-| Download and install envoy version:{{ hashicorp_consul_envoy_version }} | ansible.builtin.get_url  | False          |          |
-| Update version file                                                     | ansible.builtin.copy     | False          |          |
+| Name                                                                              | Module                   | Has Conditions | Comments |
+|-----------------------------------------------------------------------------------|--------------------------|----------------|----------|
+| Consul \| Get release for envoy:{{ hashicorp_consul_envoy_version }}              | vars                     | False          |          |
+| Consul \| Check if envoy is already installed                                     | ansible.builtin.stat     | False          |          |
+| Consul \| Check current envoy version                                             | ansible.builtin.command  | True           |          |
+| Consul \| Set facts for wanted envoy release                                      | ansible.builtin.set_fact | True           |          |
+| Consul \| Set facts for current envoy release                                     | ansible.builtin.set_fact | True           |          |
+| Consul \| Create envoy directory                                                  | ansible.builtin.file     | False          |          |
+| Consul \| Install envoy                                                           | block                    | True           |          |
+| Consul \| Remove old compose binary if different                                  | ansible.builtin.file     | False          |          |
+| Consul \| Download and install envoy version:{{ hashicorp_consul_envoy_version }} | ansible.builtin.get_url  | False          |          |
+| Consul \| Update version file                                                     | ansible.builtin.copy     | False          |          |
 
 #### File: tasks/prerequisites.yml
 
-| Name                                                       | Module                | Has Conditions | Comments |
-|------------------------------------------------------------|-----------------------|----------------|----------|
-| Create group {{ hashicorp_consul_group }}                  | ansible.builtin.group | False          |          |
-| Create user {{ hashicorp_consul_user }}                    | ansible.builtin.user  | False          |          |
-| Create directory {{ hashicorp_consul_config_dir }}         | ansible.builtin.file  | False          |          |
-| Create directory {{ hashicorp_consul_data_dir}}            | ansible.builtin.file  | False          |          |
-| Nomad \| Create directory {{ hashicorp_consul_certs_dir }} | ansible.builtin.file  | False          |          |
-| Nomad \| Create directory {{ hashicorp_consul_logs_dir }}  | ansible.builtin.file  | True           |          |
+| Name                                                         | Module                | Has Conditions | Comments |
+|--------------------------------------------------------------|-----------------------|----------------|----------|
+| Consul \| Create group {{ hashicorp_consul_group }}          | ansible.builtin.group | False          |          |
+| Consul \| Create user {{ hashicorp_consul_user }}            | ansible.builtin.user  | False          |          |
+| Consul \| Create directory {{ hashicorp_consul_config_dir }} | ansible.builtin.file  | False          |          |
+| Consul \| Create directory {{ hashicorp_consul_data_dir}}    | ansible.builtin.file  | False          |          |
+| Consul \| Create directory {{ hashicorp_consul_certs_dir }}  | ansible.builtin.file  | False          |          |
+| Consul \| Create directory {{ hashicorp_consul_logs_dir }}   | ansible.builtin.file  | True           |          |
 
 #### File: tasks/configure.yml
 
-| Name                             | Module                        | Has Conditions | Comments |
-|----------------------------------|-------------------------------|----------------|----------|
-| Create consul.env                | ansible.builtin.template      | False          |          |
-| Copy consul.json template        | ansible.builtin.template      | False          |          |
-| Set restart-check variable       | ansible.builtin.set_fact      | True           |          |
-| Copy extra configuration files   | block                         | True           |          |
-| Get extra file types             | ansible.builtin.stat          | False          |          |
-| Set list for file sources        | vars                          | True           |          |
-| Set list for directory sources   | vars                          | True           |          |
-| Template extra file sources      | ansible.builtin.template      | True           |          |
-| Template extra directory sources | ansible.builtin.include_tasks | True           |          |
+| Name                                       | Module                        | Has Conditions | Comments |
+|--------------------------------------------|-------------------------------|----------------|----------|
+| Consul \| Create consul.env                | ansible.builtin.template      | False          |          |
+| Consul \| Copy consul.json template        | ansible.builtin.template      | False          |          |
+| Consul \| Set restart-check variable       | ansible.builtin.set_fact      | True           |          |
+| Consul \| Copy extra configuration files   | block                         | True           |          |
+| Consul \| Get extra file types             | ansible.builtin.stat          | False          |          |
+| Consul \| Set list for file sources        | vars                          | True           |          |
+| Consul \| Set list for directory sources   | vars                          | True           |          |
+| Consul \| Template extra file sources      | ansible.builtin.template      | True           |          |
+| Consul \| Template extra directory sources | ansible.builtin.include_tasks | True           |          |
 
 
 
