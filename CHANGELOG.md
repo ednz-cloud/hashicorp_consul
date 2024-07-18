@@ -1,3 +1,16 @@
+## v1.0.0 (2024-07-18)
+
+### Feat
+
+- ensure log and cert directory are created, add telemetry variables
+- change variable declaration in order to integrate better with ednz_cloud.hashistack collection, while remaining usable as a standalonerole
+
+### Fix
+
+- task naming convention
+- **tests**: ensure ACLs are enabled on tests
+- **tests**: adjust tests to fit new variable declaration
+
 ## v0.2.1 (2024-07-12)
 
 ### Fix
