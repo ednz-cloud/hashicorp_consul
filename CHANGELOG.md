@@ -1,3 +1,9 @@
+## v1.0.1 (2024-07-18)
+
+### Fix
+
+- correctly merge certificate dir list with global extra dir list when tls is enabled
+
 ## v1.0.0 (2024-07-18)
 
 ### Feat
